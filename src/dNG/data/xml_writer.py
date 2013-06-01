@@ -27,8 +27,16 @@ NOTE_END //n"""
 
 from .xml_parser import direct_xml_parser
 
-try: _unicode_object = { "type": unicode, "str": unicode.encode }
-except: _unicode_object = { "type": bytes, "str": bytes.decode }
+try:
+#
+	_PY_STR = unicode.encode
+	_PY_UNICODE_TYPE = unicode
+#
+except:
+#
+	_PY_STR = bytes.decode
+	_PY_UNICODE_TYPE = str
+#
 
 class direct_xml_writer(direct_xml_parser):
 #
@@ -120,8 +128,8 @@ Read and convert a single dimension of an dictionary for our XML tree.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(xml_level) == _unicode_object['type']): xml_level = _unicode_object['str'](xml_level, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(xml_level) == _PY_UNICODE_TYPE): xml_level = _PY_STR(xml_level, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.dict_import_walker(data_dict, {0:d})- (#echo(__LINE__)#)".format(xml_level))
 		var_return = { }
@@ -162,8 +170,8 @@ handled by the calling code.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(node_path) == _unicode_object['type']): node_path = _unicode_object['str'](node_path, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_change_attributes({0}, attributes)- (#echo(__LINE__)#)".format(node_path))
 		var_return = False
@@ -197,8 +205,8 @@ Change the value of a specified node.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(node_path) == _unicode_object['type']): node_path = _unicode_object['str'](node_path, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_change_value({0}, value)- (#echo(__LINE__)#)".format(node_path))
 		var_return = False
@@ -233,8 +241,8 @@ Count the occurrence of a specified node.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(node_path) == _unicode_object['type']): node_path = _unicode_object['str'](node_path, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_count({0})- (#echo(__LINE__)#)".format(node_path))
 		var_return = 0
@@ -282,8 +290,8 @@ Read a specified node including all children if applicable.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(node_path) == _unicode_object['type']): node_path = _unicode_object['str'](node_path, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_get({0})- (#echo(__LINE__)#)".format(node_path))
 		var_return = False
@@ -314,8 +322,8 @@ Returns the pointer to a specific node.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(node_path) == _unicode_object['type']): node_path = _unicode_object['str'](node_path, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_get_ptr({0})- (#echo(__LINE__)#)".format(node_path))
 		var_return = False
@@ -390,8 +398,8 @@ Remove a node and all children if applicable.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(node_path) == _unicode_object['type']): node_path = _unicode_object['str'](node_path, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_remove({0})- (#echo(__LINE__)#)".format(node_path))
 		var_return = False
@@ -509,8 +517,8 @@ Set the cache pointer to a specific node.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(node_path) == _unicode_object['type']): node_path = _unicode_object['str'](node_path, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_set_cache_path({0})- (#echo(__LINE__)#)".format(node_path))
 		var_return = False
@@ -548,8 +556,8 @@ containing the registered XML NS.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(data) == _unicode_object['type']): data = _unicode_object['str'](data, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(data) == _PY_UNICODE_TYPE): data = _PY_STR(data, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.ns_get_uri({0})- (#echo(__LINE__)#)".format(data))
 		var_return = ""

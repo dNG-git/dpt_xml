@@ -25,6 +25,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+from cgi import escape as html_escape
 import re
 
 try:
@@ -54,8 +55,16 @@ if (_direct_xml_mode == None):
 	_direct_xml_mode = "py"
 #
 
-try: _unicode_object = { "type": unicode, "str": unicode.encode }
-except: _unicode_object = { "type": bytes, "str": bytes.decode }
+try:
+#
+	_PY_STR = unicode.encode
+	_PY_UNICODE_TYPE = unicode
+#
+except:
+#
+	_PY_STR = bytes.decode
+	_PY_UNICODE_TYPE = str
+#
 
 class direct_xml_parser(object):
 #
@@ -120,6 +129,10 @@ Reference of the cached node pointer (string if unset)
 		"""
 Charset used
 		"""
+		self.data_cdata_encoding = True
+		"""
+Put embedded XML in a CDATA node
+		"""
 		self.data_ns = { }
 		"""
 Cache for known XML NS (URI)
@@ -177,6 +190,29 @@ Destructor __del__(direct_xml_parser)
 		self.data_parser = None
 	#
 
+	def define_cdata_encoding(self, use_cdata = True):
+	#
+		"""
+Uses or disables CDATA nodes to encode embedded XML.
+
+:param use_cdata: Use CDATA nodes
+
+:return: (bool) Accepted state
+:since:  v0.1.00
+		"""
+
+		global _PY_STR, _PY_UNICODE_TYPE
+
+		if (str != _PY_UNICODE_TYPE and type(use_cdata) == _PY_UNICODE_TYPE): use_cdata = _PY_STR(use_cdata, "utf-8")
+		var_type = type(use_cdata)
+
+		if ((var_type == bool or var_type == str) and use_cdata): self.data_cdata_encoding = True
+		elif (use_cdata == None and (not self.data_use_cdata)): self.data_cdata_encoding = True
+		else: self.data_cdata_encoding = False
+
+		return self.data_cdata_encoding
+	#
+
 	def define_parse_only(self, parse_only = True):
 	#
 		"""
@@ -189,10 +225,9 @@ completed.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.define_parse_only(parse_only)- (#echo(__LINE__)#)")
+		global _PY_STR, _PY_UNICODE_TYPE
 
-		if (type(parse_only) == _unicode_object['type']): parse_only = _unicode_object['str'](parse_only, "utf-8")
+		if (str != _PY_UNICODE_TYPE and type(parse_only) == _PY_UNICODE_TYPE): parse_only = _PY_STR(parse_only, "utf-8")
 		var_type = type(parse_only)
 
 		if ((var_type == bool or var_type == str) and parse_only): self.data_parse_only = True
@@ -215,7 +250,6 @@ Searches haystack for needle.
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.dict_search({0}, haystack)- (#echo(__LINE__)#)".format(needle))
 		var_return = False
 
 		if (needle in haystack):
@@ -288,9 +322,7 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.array2xml_item_encoder(data, {0}, strict_standard)- (#echo(__LINE__)#)".format(close_tag))
-
+		global _PY_STR, _PY_UNICODE_TYPE
 		var_return = ""
 
 		is_value_attr_compatible = (False if (strict_standard) else True)
@@ -314,7 +346,7 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 							if (type_value == int or type_value == float): value = str(data['attributes'][key])
 							else: value = data['attributes'][key]
 
-							if (type(value) == _unicode_object['type']): value = _unicode_object['str'](value, "utf-8")
+							if (str != _PY_UNICODE_TYPE and type(value) == _PY_UNICODE_TYPE): value = _PY_STR(value, "utf-8")
 							value = value.replace("&", "&amp;")
 							value = value.replace("<", "&lt;")
 							value = value.replace(">", "&gt;")
@@ -326,14 +358,14 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 					#
 				#
 
-				if ("value" in data and (strict_standard or len(data['value']) > 0)):
+				if (is_value_attr_compatible and "value" in data):
 				#
 					type_value = type(data['value'])
 
 					if (type_value == int or type_value == float): data['value'] = str(data['value'])
 					else:
 					#
-						if (type_value == _unicode_object['type']): data['value'] = _unicode_object['str'](data['value'], "utf-8")
+						if (str != _PY_UNICODE_TYPE and type_value == _PY_UNICODE_TYPE): data['value'] = _PY_STR(data['value'], "utf-8")
 
 						if (is_value_attr_compatible):
 						#
@@ -357,21 +389,22 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 				#
 					var_return += ">"
 
-					if ("value" in data and (not is_value_attr_compatible)):
+					if ("value" in data):
 					#
-						if (type(data['value']) == _unicode_object['type']): data['value'] = _unicode_object['str'](data['value'], "utf-8")
+						if (str != _PY_UNICODE_TYPE and type(data['value']) == _PY_UNICODE_TYPE): data['value'] = _PY_STR(data['value'], "utf-8")
 						if (self.data_charset != "UTF-8"): data['value'] = data['value'].encode(self.data_charset)
 
 						if ("<" not in data['value'] and ">" not in data['value']): var_return += data['value'].replace("&", "&amp;")
-						else:
+						elif (self.data_cdata_encoding):
 						#
 							if ("]]>" in data['value']): data['value'] = data['value'].replace("]]>", "]]]]><![CDATA[>")
 							var_return += "<![CDATA[{0}]]>".format(data['value'])
 						#
+						else: var_return += html_escape(data['value'], True)
 					#
-				#
 
-				if ((not is_value_attr_compatible) and close_tag): var_return += "</{0}>".format(data['tag'])
+					if (close_tag): var_return += "</{0}>".format(data['tag'])
+				#
 			#
 		#
 
@@ -406,8 +439,8 @@ Adds a XML node with content - recursively if required.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
-		if (type (node_path) == _unicode_object['type']): node_path = _unicode_object['str'](node_path, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_add({0}, value, attributes, add_recursively)- (#echo(__LINE__)#)".format(node_path))
 		var_return = False
@@ -415,7 +448,7 @@ Adds a XML node with content - recursively if required.
 		if (self.data == None): self.data = self.node_type()
 		type_value = type(value)
 
-		if (type(node_path) == str and type_value == str or type_value == _unicode_object['type']):
+		if (type(node_path) == str and type_value == str or type_value == _PY_UNICODE_TYPE):
 		#
 			node_path = self.ns_translate_path(node_path)
 
@@ -536,8 +569,9 @@ Adds a XML node with content - recursively if required.
 						for key in attributes:
 						#
 							value = attributes[key]
+							type_value = type(value)
 
-							if (direct_xml_parser.RE_ATTRIBUTES_XMLNS.match(key) != None):
+							if ((type_value == str or type_value == _PY_UNICODE_TYPE) and direct_xml_parser.RE_ATTRIBUTES_XMLNS.match(key) != None):
 							#
 								ns_name = key[6:]
 
@@ -576,6 +610,16 @@ Adds a XML node with content - recursively if required.
 
 	def node_add_ns_cache(self, node_path_done, node_name, node_dict):
 	#
+		"""
+Caches XML namespace data for the given XML node.
+
+:param node_path_done: XML node path containing the given XML node
+:param node_name: XML node name
+:param node_dict: XML node
+
+:since: v0.1.00
+		"""
+
 		node_ns_name = ""
 		re_result = direct_xml_parser.RE_NODE_NAME_XMLNS.match(node_name)
 
@@ -612,9 +656,13 @@ Registers a namespace (URI) for later use with this XML reader instance.
 :since: v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(ns) == _unicode_object['type']): ns = _unicode_object['str'](ns, "utf-8")
-		if (type(uri) == _unicode_object['type']): uri = _unicode_object['str'](uri, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+
+		if (str != _PY_UNICODE_TYPE):
+		#
+			if (type(ns) == _PY_UNICODE_TYPE): ns = _PY_STR(ns, "utf-8")
+			if (type(uri) == _PY_UNICODE_TYPE): uri = _PY_STR(uri, "utf-8")
+		#
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.ns_register({0}, {1})- (#echo(__LINE__)#)".format(ns, uri))
 		self.data_ns[ns] = uri
@@ -695,8 +743,8 @@ path.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(node_path) == _unicode_object['type']): node_path = _unicode_object['str'](node_path, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.ns_translate_path({0})- (#echo(__LINE__)#)".format(node_path))
 		var_return = node_path
@@ -733,8 +781,8 @@ Unregisters a namespace or clears the cache (if ns is empty).
 :since: v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(ns) == _unicode_object['type']): ns = _unicode_object['str'](ns, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(ns) == _PY_UNICODE_TYPE): ns = _PY_STR(ns, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.ns_unregister({0})- (#echo(__LINE__)#)".format(ns))
 
@@ -808,7 +856,7 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 :since:  v0.1.00
 		"""
 
-		global _direct_xml_mode, _unicode_object
+		global _direct_xml_mode, _PY_STR, _PY_UNICODE_TYPE
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict(data, treemode, strict_standard)- (#echo(__LINE__)#)")
 		var_return = False
 
@@ -816,7 +864,7 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 		#
 			if (_direct_xml_mode == "mono"):
 			#
-				if (type(data) == _unicode_object['type']): data = _unicode_object['str'](data, "utf-8")
+				if (str != _PY_UNICODE_TYPE and type(data) == _PY_UNICODE_TYPE): data = _PY_STR(data, "utf-8")
 
 				parser_ptr = XmlDocument()
 				parser_ptr.LoadXml(data)
@@ -827,7 +875,7 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 			elif (re.search("<\\?xml(.+?)encoding=", data) == None):
 			#
 				parser_ptr = expat.ParserCreate("UTF-8")
-				if (type(data) == _unicode_object['type']): data = _unicode_object['str'](data, "utf-8")
+				if (str != _PY_UNICODE_TYPE and type(data) == _PY_UNICODE_TYPE): data = _PY_STR(data, "utf-8")
 			#
 			else: parser_ptr = expat.ParserCreate()
 		#
