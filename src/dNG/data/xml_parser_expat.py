@@ -23,10 +23,18 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-try: _unicode_object = { "type": unicode, "str": unicode.encode }
-except: _unicode_object = { "type": bytes, "str": bytes.decode }
+try:
+#
+	_PY_STR = unicode.encode
+	_PY_UNICODE_TYPE = unicode
+#
+except:
+#
+	_PY_STR = bytes.decode
+	_PY_UNICODE_TYPE = str
+#
 
-class direct_xml_parser_expat(object):
+class XmlParserExpat(object):
 #
 	"""
 This implementation supports expat for XML parsing.
@@ -51,7 +59,7 @@ Tree parsing mode
 	def __init__(self, parser, event_handler = None):
 	#
 		"""
-Constructor __init__(direct_xml_parser_expat)
+Constructor __init__(XmlParserExpat)
 
 :param parser: Container for the XML document
 :param event_handler: EventHandler to use
@@ -111,7 +119,7 @@ True to be standard conform
 	def __del__(self):
 	#
 		"""
-Destructor __del__(direct_xml_parser_expat)
+Destructor __del__(XmlParserExpat)
 
 :since: v0.1.00
 		"""
@@ -130,12 +138,11 @@ Define the parser mode MODE_MERGED or MODE_TREE.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.define_mode({0:d})- (#echo(__LINE__)#)".format(mode))
 
 		if ((not self.parser_active) and type(mode) == int):
 		#
-			if (mode == direct_xml_parser_expat.MODE_MERGED): self.data_merged_mode = True
+			if (mode == XmlParserExpat.MODE_MERGED): self.data_merged_mode = True
 			else: self.data_merged_mode = False
 		#
 
@@ -153,10 +160,10 @@ Changes the parser mode regarding being strict standard compliant.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
+		global _PY_STR, _PY_UNICODE_TYPE
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.define_strict_standard(strict_standard)- (#echo(__LINE__)#)")
 
-		if (type(strict_standard) == _unicode_object['type']): strict_standard = _unicode_object['str'](strict_standard, "utf-8")
+		if (str != _PY_UNICODE_TYPE and type(strict_standard) == _PY_UNICODE_TYPE): strict_standard = _PY_STR(strict_standard, "utf-8")
 		var_type = type(strict_standard)
 
 		if ((var_type == bool or var_type == str) and strict_standard): self.parser_strict_standard = True
@@ -199,8 +206,8 @@ Method to handle "end element" callbacks.
 :since: v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(name) == _unicode_object['type']): name = _unicode_object['str'](name, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.expat_element_end({0})- (#echo(__LINE__)#)".format(name))
 
@@ -267,8 +274,8 @@ Method to handle "end element" callbacks. (Merged XML parser)
 :since: v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(name) == _unicode_object['type']): name = _unicode_object['str'](name, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.expat_merged_element_end({0})- (#echo(__LINE__)#)".format(name))
 
@@ -309,8 +316,8 @@ Method to handle "start element" callbacks. (Merged XML parser)
 :since: v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(name) == _unicode_object['type']): name = _unicode_object['str'](name, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.expat_merged_element_start({0}, attributes)- (#echo(__LINE__)#)".format(name))
 
@@ -332,7 +339,7 @@ Method to handle "start element" callbacks. (Merged XML parser)
 
 		for key in attributes:
 		#
-			if (type(key) == _unicode_object['type']): key = _unicode_object['str'](key, "utf-8")
+			if (str != _PY_UNICODE_TYPE and type(key) == _PY_UNICODE_TYPE): key = _PY_STR(key, "utf-8")
 			key_lowercase = key.lower()
 			value = attributes[key]
 
@@ -380,8 +387,8 @@ Method to handle "start element" callbacks.
 :since: v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(name) == _unicode_object['type']): name = _unicode_object['str'](name, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.expat_element_start({0}, attributes)- (#echo(__LINE__)#)".format(name))
 
@@ -407,7 +414,7 @@ Method to handle "start element" callbacks.
 
 		for key in attributes:
 		#
-			if (type(key) == _unicode_object['type']): key = _unicode_object['str'](key, "utf-8")
+			if (str != _PY_UNICODE_TYPE and type(key) == _PY_UNICODE_TYPE): key = _PY_STR(key, "utf-8")
 			key_lowercase = key.lower()
 			value = attributes[key]
 

@@ -25,7 +25,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from .xml_parser import direct_xml_parser
+from .xml_parser import XmlParser
 
 try:
 #
@@ -38,7 +38,7 @@ except:
 	_PY_UNICODE_TYPE = str
 #
 
-class direct_xml_writer(direct_xml_parser):
+class XmlWriter(XmlParser):
 #
 	"""
 This class extends the bridge between Python and XML to work with XML and
@@ -55,7 +55,7 @@ create valid documents.
 	def __init__(self, xml_charset = "UTF-8", node_type = dict, timeout_retries = 5, event_handler = None):
 	#
 		"""
-Constructor __init__(direct_xml_writer)
+Constructor __init__(XmlWriter)
 
 :param xml_charset: Charset to be added as information to XML output
 :param node_type: Dict implementation for new nodes
@@ -65,7 +65,7 @@ Constructor __init__(direct_xml_writer)
 :since: v0.1.00
 		"""
 
-		direct_xml_parser.__init__(self, xml_charset, False, node_type, timeout_retries, event_handler)
+		XmlParser.__init__(self, xml_charset, False, node_type, timeout_retries, event_handler)
 	#
 
 	def cache_export(self, flush = False, strict_standard = True):
@@ -344,7 +344,7 @@ Returns the pointer to a specific node.
 			#
 				is_valid = False
 				node_name = node_path_list.pop(0)
-				re_result = direct_xml_writer.RE_NODE_POSITION.match(node_name)
+				re_result = XmlWriter.RE_NODE_POSITION.match(node_name)
 
 				if (re_result == None): node_position = -1
 				else:
@@ -436,7 +436,7 @@ Get the parent node of the target.
 
 			if (isinstance(node_ptr, dict)):
 			#
-				re_result = direct_xml_writer.RE_NODE_POSITION.match(node_name)
+				re_result = XmlWriter.RE_NODE_POSITION.match(node_name)
 
 				if (re_result == None): node_position = -1
 				else:
@@ -562,7 +562,7 @@ containing the registered XML NS.
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.ns_get_uri({0})- (#echo(__LINE__)#)".format(data))
 		var_return = ""
 
-		re_result = direct_xml_writer.RE_NODE_NAME_XMLNS.match(data)
+		re_result = XmlWriter.RE_NODE_NAME_XMLNS.match(data)
 
 		if (re_result != None):
 		#
@@ -588,7 +588,7 @@ node.
 
 		var_return = name
 
-		re_result = direct_xml_writer.RE_NODE_NAME_XMLNS.match(name)
+		re_result = XmlWriter.RE_NODE_NAME_XMLNS.match(name)
 
 		if (re_result != None and re_result.group(1) in self.data_ns and re_result.group(2) in node):
 		#

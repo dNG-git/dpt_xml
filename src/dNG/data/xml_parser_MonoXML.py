@@ -26,10 +26,18 @@ NOTE_END //n"""
 from System.Xml import XmlNodeType
 from time import time
 
-try: _unicode_object = { "type": unicode, "str": unicode.encode }
-except: _unicode_object = { "type": bytes, "str": bytes.decode }
+try:
+#
+	_PY_STR = unicode.encode
+	_PY_UNICODE_TYPE = unicode
+#
+except:
+#
+	_PY_STR = bytes.decode
+	_PY_UNICODE_TYPE = str
+#
 
-class direct_xml_parser_MonoXML(object):
+class XmlParserMonoXml(object):
 #
 	"""
 This implementation supports XmlNodeReader for XML parsing.
@@ -45,7 +53,7 @@ This implementation supports XmlNodeReader for XML parsing.
 	def __init__(self, parser, timeout_retries = 5, event_handler = None):
 	#
 		"""
-Constructor __init__(direct_xml_parser_MonoXML)
+Constructor __init__(XmlParserMonoXml)
 
 :param parser: Container for the XML document
 :param current_time: Current UNIX timestamp
@@ -75,7 +83,7 @@ Retries before timing out
 	def __del__(self):
 	#
 		"""
-Destructor __del__(direct_xml_parser_MonoXML)
+Destructor __del__(XmlParserMonoXml)
 
 :since: v0.1.00
 		"""
@@ -168,7 +176,7 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
+		global _PY_STR, _PY_UNICODE_TYPE
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_MonoXML_merged(XmlNodeReader)- (#echo(__LINE__)#)")
 
 		var_return = False
@@ -201,7 +209,7 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 						while (XmlNodeReader.MoveToNextAttribute() and time() < timeout_time):
 						#
 							attribute_name = XmlNodeReader.Name.lower()
-							if (type(attribute_name) == _unicode_object['type']): attribute_name = _unicode_object['str'](attribute_name, "utf-8")
+							if (str != _PY_UNICODE_TYPE and type(attribute_name) == _PY_UNICODE_TYPE): attribute_name = _PY_STR(attribute_name, "utf-8")
 
 							if (attribute_name.startswith("xmlns:")): attributes_dict["xmlns:{0}".format(attribute_name[6:])] = XmlNodeReader.Value
 							elif (attribute_name == "xml:space"): attributes_dict['xml:space'] = XmlNodeReader.Value.lower()
@@ -296,8 +304,8 @@ algorithm.
 :since:  v0.1.00
 		"""
 
-		global _unicode_object
-		if (type(node_path) == _unicode_object['type']): node_path = _unicode_object['str'](node_path, "utf-8")
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_MonoXML_walker(XmlNodeReader, strict_standard, {0}, {1:d})- (#echo(__LINE__)#)".format(node_path, xml_level))
 		var_return = False
@@ -319,12 +327,12 @@ algorithm.
 					if (strict_standard):
 					#
 						node_name = XmlNodeReader.Name
-						if (type(node_name) == _unicode_object['type']): node_name = _unicode_object['str'](node_name, "utf-8")
+						if (str != _PY_UNICODE_TYPE and type(node_name) == _PY_UNICODE_TYPE): node_name = _PY_STR(node_name, "utf-8")
 					#
 					else:
 					#
 						node_name = XmlNodeReader.Name.lower()
-						if (type(node_name) == _unicode_object['type']): node_name = _unicode_object['str'](node_name, "utf-8")
+						if (str != _PY_UNICODE_TYPE and type(node_name) == _PY_UNICODE_TYPE): node_name = _PY_STR(node_name, "utf-8")
 						if (node_name[:12] == "digitstart__"): node_name = node_name[12:]
 					#
 
@@ -333,7 +341,7 @@ algorithm.
 						while (XmlNodeReader.MoveToNextAttribute() and time() < timeout_time):
 						#
 							attribute_name = XmlNodeReader.Name.lower()
-							if (type(attribute_name) == _unicode_object['type']): attribute_name = _unicode_object['str'](attribute_name, "utf-8")
+							if (str != _PY_UNICODE_TYPE and type(attribute_name) == _PY_UNICODE_TYPE): attribute_name = _PY_STR(attribute_name, "utf-8")
 
 							if (attribute_name.startswith("xmlns:")): attributes_dict["xmlns:{0}".format(attribute_name[6:])] = XmlNodeReader.Value
 							elif (attribute_name == "xml:space"):

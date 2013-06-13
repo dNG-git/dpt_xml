@@ -31,9 +31,9 @@ import re
 try:
 #
 	import java.lang.System
-	_direct_xml_mode = "java"
+	_mode = "java"
 #
-except ImportError: _direct_xml_mode = None
+except ImportError: _mode = None
 
 try:
 #
@@ -42,17 +42,17 @@ try:
 	from System.IO import StringReader
 	from System.Xml import XmlDocument, XmlNodeReader
 
-	from .xml_parser_MonoXML import direct_xml_parser_MonoXML
-	_direct_xml_mode = "mono"
+	from .xml_parser_MonoXML import XmlParserMonoXml
+	_mode = "mono"
 #
 except ImportError: pass
 
-if (_direct_xml_mode == None):
+if (_mode == None):
 #
 	from xml.parsers import expat
 
-	from .xml_parser_expat import direct_xml_parser_expat
-	_direct_xml_mode = "py"
+	from .xml_parser_expat import XmlParserExpat
+	_mode = "py"
 #
 
 try:
@@ -66,7 +66,7 @@ except:
 	_PY_UNICODE_TYPE = str
 #
 
-class direct_xml_parser(object):
+class XmlParser(object):
 #
 	"""
 This class provides a bridge between Python and XML to read XML on the fly.
@@ -100,7 +100,7 @@ compliant)
 	def __init__(self, xml_charset = "UTF-8", parse_only = True, node_type = dict, timeout_retries = 5, event_handler = None):
 	#
 		"""
-Constructor __init__(direct_xml_parser)
+Constructor __init__(XmlParser)
 
 :param xml_charset: Charset to be added as information to XML output
 :param parse_only: Parse data only
@@ -111,7 +111,7 @@ Constructor __init__(direct_xml_parser)
 :since: v0.1.00
 		"""
 
-		global _direct_xml_mode
+		global _mode
 
 		self.data = None
 		"""
@@ -175,14 +175,14 @@ happened.
 Dict implementation used to create new nodes
 		"""
 
-		if (_direct_xml_mode == "mono"): self.data_parser = direct_xml_parser_MonoXML(self, timeout_retries, event_handler)
-		else: self.data_parser = direct_xml_parser_expat(self, event_handler)
+		if (_mode == "mono"): self.data_parser = XmlParserMonoXml(self, timeout_retries, event_handler)
+		else: self.data_parser = XmlParserExpat(self, event_handler)
 	#
 
 	def __del__(self):
 	#
 		"""
-Destructor __del__(direct_xml_parser)
+Destructor __del__(XmlParser)
 
 :since: v0.1.00
 		"""
@@ -296,7 +296,7 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 				elif ("xml.item" in xml_node_dict):
 				#
 					var_return += self.dict2xml_item_encoder (xml_node_dict['xml.item'], False, strict_standard)
-					xml_node_tag = (xml_node_dict['xml.item']['tag'] if (direct_xml_parser.RE_TAG_DIGIT.match(xml_node_dict['xml.item']['tag']) == None) else "digitstart__{0}".format(xml_node_dict['xml.item']['tag']))
+					xml_node_tag = (xml_node_dict['xml.item']['tag'] if (XmlParser.RE_TAG_DIGIT.match(xml_node_dict['xml.item']['tag']) == None) else "digitstart__{0}".format(xml_node_dict['xml.item']['tag']))
 
 					del(xml_node_dict['xml.item'])
 					var_return += "{0}</{1}>".format(self.dict2xml(xml_node_dict, strict_standard), xml_node_tag)
@@ -471,7 +471,7 @@ Adds a XML node with content - recursively if required.
 			#
 				is_available = False
 				node_name = nodes_list.pop(0)
-				re_result = direct_xml_parser.RE_NODE_POSITION.match(node_name)
+				re_result = XmlParser.RE_NODE_POSITION.match(node_name)
 
 				if (re_result == None): node_position = -1
 				else:
@@ -571,7 +571,7 @@ Adds a XML node with content - recursively if required.
 							value = attributes[key]
 							type_value = type(value)
 
-							if ((type_value == str or type_value == _PY_UNICODE_TYPE) and direct_xml_parser.RE_ATTRIBUTES_XMLNS.match(key) != None):
+							if ((type_value == str or type_value == _PY_UNICODE_TYPE) and XmlParser.RE_ATTRIBUTES_XMLNS.match(key) != None):
 							#
 								ns_name = key[6:]
 
@@ -621,7 +621,7 @@ Caches XML namespace data for the given XML node.
 		"""
 
 		node_ns_name = ""
-		re_result = direct_xml_parser.RE_NODE_NAME_XMLNS.match(node_name)
+		re_result = XmlParser.RE_NODE_NAME_XMLNS.match(node_name)
 
 		if (re_result != None):
 		#
@@ -695,7 +695,7 @@ tag will be saved as "tag_ns" and "tag_parsed".
 			var_return['tag_ns'] = ""
 			var_return['tag_parsed'] = node['tag']
 
-			re_result = direct_xml_parser.RE_NODE_NAME_XMLNS.match(node['tag'])
+			re_result = XmlParser.RE_NODE_NAME_XMLNS.match(node['tag'])
 
 			if (re_result != None and re_result.group(1) in node['xmlns'] and node['xmlns'][re_result.group(1)] in self.data_ns_compact):
 			#
@@ -712,7 +712,7 @@ tag will be saved as "tag_ns" and "tag_parsed".
 			#
 				for key in node['attributes']:
 				#
-					re_result = direct_xml_parser.RE_NODE_NAME_XMLNS.match(key)
+					re_result = XmlParser.RE_NODE_NAME_XMLNS.match(key)
 
 					if (re_result != None and re_result.group(1) in node['xmlns'] and node['xmlns'][re_result.group(1)] in self.data_ns_compact):
 					#
@@ -759,7 +759,7 @@ path.
 
 			if (":" in node_name):
 			#
-				re_result = direct_xml_parser.RE_NODE_NAME_XMLNS.match(node_name)
+				re_result = XmlParser.RE_NODE_NAME_XMLNS.match(node_name)
 
 				if (re_result == None): node_path += node_name
 				else: node_path += "{0}:{1}".format((self.data_ns_default[self.data_ns[re_result.group(1)]] if (re_result.group(1) in self.data_ns and self.data_ns[re_result.group(1)] in self.data_ns_default) else re_result.group(1)), re_result.group(2))
@@ -856,13 +856,13 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 :since:  v0.1.00
 		"""
 
-		global _direct_xml_mode, _PY_STR, _PY_UNICODE_TYPE
+		global _mode, _PY_STR, _PY_UNICODE_TYPE
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict(data, treemode, strict_standard)- (#echo(__LINE__)#)")
 		var_return = False
 
 		try:
 		#
-			if (_direct_xml_mode == "mono"):
+			if (_mode == "mono"):
 			#
 				if (str != _PY_UNICODE_TYPE and type(data) == _PY_UNICODE_TYPE): data = _PY_STR(data, "utf-8")
 
@@ -881,11 +881,11 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 		#
 		except: parser_ptr = None
 
-		if (_direct_xml_mode == "py" and parser_ptr != None):
+		if (_mode == "py" and parser_ptr != None):
 		#
 			if (treemode):
 			#
-				self.data_parser.define_mode(direct_xml_parser_expat.MODE_TREE)
+				self.data_parser.define_mode(XmlParserExpat.MODE_TREE)
 				self.data_parser.define_strict_standard(strict_standard)
 
 				parser_ptr.CharacterDataHandler = self.data_parser.expat_cdata
@@ -897,7 +897,7 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 			#
 			else:
 			#
-				self.data_parser.define_mode(direct_xml_parser_expat.MODE_MERGED)
+				self.data_parser.define_mode(XmlParserExpat.MODE_MERGED)
 
 				parser_ptr.CharacterDataHandler = self.data_parser.expat_merged_cdata
 				parser_ptr.StartElementHandler = self.data_parser.expat_merged_element_start
