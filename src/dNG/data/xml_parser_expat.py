@@ -116,17 +116,6 @@ True to be standard conform
 		"""
 	#
 
-	def __del__(self):
-	#
-		"""
-Destructor __del__(XmlParserExpat)
-
-:since: v0.1.00
-		"""
-
-		self.parser = None
-	#
-
 	def define_mode(self, mode = 1):
 	#
 		"""

@@ -179,17 +179,6 @@ Dict implementation used to create new nodes
 		else: self.data_parser = XmlParserExpat(self, event_handler)
 	#
 
-	def __del__(self):
-	#
-		"""
-Destructor __del__(XmlParser)
-
-:since: v0.1.00
-		"""
-
-		self.data_parser = None
-	#
-
 	def define_cdata_encoding(self, use_cdata = True):
 	#
 		"""

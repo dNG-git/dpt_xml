@@ -80,17 +80,6 @@ Retries before timing out
 		"""
 	#
 
-	def __del__(self):
-	#
-		"""
-Destructor __del__(XmlParserMonoXml)
-
-:since: v0.1.00
-		"""
-
-		self.parser = None
-	#
-
 	def xml2dict_MonoXML(self, XmlNodeReader, strict_standard = True):
 	#
 		"""
