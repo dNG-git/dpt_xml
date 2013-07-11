@@ -153,9 +153,9 @@ Changes the parser mode regarding being strict standard compliant.
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.define_strict_standard(strict_standard)- (#echo(__LINE__)#)")
 
 		if (str != _PY_UNICODE_TYPE and type(strict_standard) == _PY_UNICODE_TYPE): strict_standard = _PY_STR(strict_standard, "utf-8")
-		var_type = type(strict_standard)
+		_type = type(strict_standard)
 
-		if ((var_type == bool or var_type == str) and strict_standard): self.parser_strict_standard = True
+		if ((_type == bool or _type == str) and strict_standard): self.parser_strict_standard = True
 		elif (strict_standard == None and (not self.parser_strict_standard)): self.parser_strict_standard = True
 		else: self.parser_strict_standard = False
 
@@ -440,7 +440,7 @@ the parser completed its work.
 		"""
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_expat()- (#echo(__LINE__)#)")
-		var_return = { }
+		_return = { }
 
 		if ((not self.parser_active) and type(self.parser_cache) == dict and len(self.parser_cache) > 0):
 		#
@@ -453,10 +453,10 @@ the parser completed its work.
 			#
 
 			self.parser_cache = { }
-			var_return = self.parser.get()
+			_return = self.parser.get()
 		#
 
-		return var_return
+		return _return
 	#
 
 	def xml2dict_expat_merged(self):
@@ -470,15 +470,15 @@ completed its work.
 		"""
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2array_expat_merged()- (#echo(__LINE__)#)")
-		var_return = { }
+		_return = { }
 
 		if ((not self.parser_active) and type(self.parser_cache) == dict and len(self.parser_cache) > 0):
 		#
-			var_return = self.parser_cache
+			_return = self.parser_cache
 			self.parser_cache = { }
 		#
 
-		return var_return
+		return _return
 	#
 #
 

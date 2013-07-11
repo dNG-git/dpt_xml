@@ -82,14 +82,14 @@ Convert the cached XML tree into a XML string.
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.cache_export(flush, strict_standard)- (#echo(__LINE__)#)")
 
-		if (self.data == None or len(self.data) < 1): var_return = ""
+		if (self.data == None or len(self.data) < 1): _return = ""
 		else:
 		#
-			var_return = self.dict2xml(self.data, strict_standard)
+			_return = self.dict2xml(self.data, strict_standard)
 			if (flush): self.data = { }
 		#
 
-		return var_return
+		return _return
 	#
 
 	def dict_import(self, data_dict, overwrite = False):
@@ -105,15 +105,15 @@ Read and convert a simple multi-dimensional dict into our XML tree.
 		"""
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.dict_import(data_dict, overwrite)- (#echo(__LINE__)#)")
-		var_return = False
+		_return = False
 
 		if (self.data == None or len(self.data) < 1 or overwrite):
 		#
 			self.data = self.dict_import_walker(data_dict)
-			var_return = True
+			_return = True
 		#
 
-		return var_return
+		return _return
 	#
 
 	def dict_import_walker(self, data_dict, xml_level = 1):
@@ -132,29 +132,29 @@ Read and convert a single dimension of an dictionary for our XML tree.
 		if (str != _PY_UNICODE_TYPE and type(xml_level) == _PY_UNICODE_TYPE): xml_level = _PY_STR(xml_level, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.dict_import_walker(data_dict, {0:d})- (#echo(__LINE__)#)".format(xml_level))
-		var_return = { }
+		_return = { }
 
 		if (isinstance(data_dict, dict)):
 		#
 			for key in data_dict:
 			#
-				var_type = type(key)
+				_type = type(key)
 				value = data_dict[key]
 
-				if (var_type == int or var_type == float or len(key) > 0):
+				if (_type == int or _type == float or len(key) > 0):
 				#
 					if (isinstance(value, dict)):
 					#
 						node_dict = self.node_type([ ( "xml.item", { "tag": key,"level": xml_level,"xmlns": { } } ) ])
 						node_dict.update(self.dict_import_walker(value, (1 + xml_level)))
-						var_return[key] = node_dict
+						_return[key] = node_dict
 					#
-					elif (isinstance(value, list)): var_return[key] = self.node_type(tag = key, value = value, xmlns = { })
+					elif (isinstance(value, list)): _return[key] = self.node_type(tag = key, value = value, xmlns = { })
 				#
 			#
 		#
 
-		return var_return
+		return _return
 	#
 
 	def node_change_attributes(self, node_path, attributes):
@@ -174,7 +174,7 @@ handled by the calling code.
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_change_attributes({0}, attributes)- (#echo(__LINE__)#)".format(node_path))
-		var_return = False
+		_return = False
 
 		if (type(node_path) == str and type(attributes) == dict):
 		#
@@ -186,11 +186,11 @@ handled by the calling code.
 				if ("xml.item" in node_ptr): node_ptr['xml.item']['attributes'] = attributes
 				else: node_ptr['attributes'] = attributes
 
-				var_return = True
+				_return = True
 			#
 		#
 
-		return var_return
+		return _return
 	#
 
 	def node_change_value(self, node_path, value):
@@ -209,11 +209,11 @@ Change the value of a specified node.
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_change_value({0}, value)- (#echo(__LINE__)#)".format(node_path))
-		var_return = False
+		_return = False
 
-		var_type = type(value)
+		_type = type(value)
 
-		if (type(node_path) == str and (not isinstance(var_type, dict)) and (not isinstance(var_type, list))):
+		if (type(node_path) == str and (not isinstance(_type, dict)) and (not isinstance(_type, list))):
 		#
 			node_path = self.ns_translate_path(node_path)
 			node_ptr = self.node_get_ptr(node_path)
@@ -223,11 +223,11 @@ Change the value of a specified node.
 				if ("xml.item" in node_ptr): node_ptr['xml.item']['value'] = value
 				else: node_ptr['value'] = value
 
-				var_return = True
+				_return = True
 			#
 		#
 
-		return var_return
+		return _return
 	#
 
 	def node_count(self, node_path):
@@ -245,7 +245,7 @@ Count the occurrence of a specified node.
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_count({0})- (#echo(__LINE__)#)".format(node_path))
-		var_return = 0
+		_return = 0
 
 		if (type(node_path) == str):
 		#
@@ -271,11 +271,11 @@ Get the parent node of the target.
 			if (isinstance(node_ptr, dict)):
 			#
 				node_name = self.ns_translate_name(node_ptr, node_name)
-				if (node_name in node_ptr): var_return = ((len(node_ptr[node_name]) - 1) if ("xml.mtree" in node_ptr[node_name]) else 1)
+				if (node_name in node_ptr): _return = ((len(node_ptr[node_name]) - 1) if ("xml.mtree" in node_ptr[node_name]) else 1)
 			#
 		#
 
-		return var_return
+		return _return
 	#
 
 	def node_get(self, node_path, remove_metadata = True):
@@ -294,7 +294,7 @@ Read a specified node including all children if applicable.
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_get({0})- (#echo(__LINE__)#)".format(node_path))
-		var_return = False
+		_return = False
 
 		if (type(node_path) == str):
 		#
@@ -303,12 +303,12 @@ Read a specified node including all children if applicable.
 
 			if (isinstance(node_ptr, dict)):
 			#
-				var_return = node_ptr.copy()
-				if (remove_metadata and "xml.item" in var_return): del(var_return['xml.item'])
+				_return = node_ptr.copy()
+				if (remove_metadata and "xml.item" in _return): del(_return['xml.item'])
 			#
 		#
 
-		return var_return
+		return _return
 	#
 
 	def node_get_ptr(self, node_path):
@@ -326,7 +326,7 @@ Returns the pointer to a specific node.
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_get_ptr({0})- (#echo(__LINE__)#)".format(node_path))
-		var_return = False
+		_return = False
 
 		if (type(node_path) == str):
 		#
@@ -381,10 +381,10 @@ Returns the pointer to a specific node.
 				#
 			#
 
-			if (is_valid): var_return = node_ptr
+			if (is_valid): _return = node_ptr
 		#
 
-		return var_return
+		return _return
 	#
 
 	def node_remove(self, node_path):
@@ -402,7 +402,7 @@ Remove a node and all children if applicable.
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_remove({0})- (#echo(__LINE__)#)".format(node_path))
-		var_return = False
+		_return = False
 
 		if (type(node_path) == str):
 		#
@@ -456,20 +456,20 @@ Get the parent node of the target.
 							if (node_position in node_ptr[node_name]):
 							#
 								del(node_ptr[node_name][node_position])
-								var_return = True
+								_return = True
 							#
 						#
 						elif (node_ptr[node_name]['xml.mtree'] in node_ptr[node_name]):
 						#
 							del (node_ptr[node_name][node_ptr[node_name]['xml.mtree']])
-							var_return = True
+							_return = True
 						#
 
 						"""
 Update the mtree counter or remove it if applicable.
 						"""
 
-						if (var_return):
+						if (_return):
 						#
 							node_ptr[node_name]['xml.mtree'] -= 1
 
@@ -497,13 +497,13 @@ Update the mtree counter or remove it if applicable.
 					else:
 					#
 						del(node_ptr[node_name])
-						var_return = True
+						_return = True
 					#
 				#
 			#
 		#
 
-		return var_return
+		return _return
 	#
 
 	def node_set_cache_path(self, node_path):
@@ -521,13 +521,13 @@ Set the cache pointer to a specific node.
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_set_cache_path({0})- (#echo(__LINE__)#)".format(node_path))
-		var_return = False
+		_return = False
 
 		if (type(node_path) == str):
 		#
 			node_path = self.ns_translate_path(node_path)
 
-			if (node_path == self.data_cache_node): var_return = True
+			if (node_path == self.data_cache_node): _return = True
 			else:
 			#
 				node_ptr = self.node_get_ptr(node_path)
@@ -536,12 +536,12 @@ Set the cache pointer to a specific node.
 				#
 					self.data_cache_node = node_path
 					self.data_cache_ptr = node_ptr
-					var_return = True
+					_return = True
 				#
 			#
 		#
 
-		return var_return
+		return _return
 	#
 
 	def ns_get_uri(self, data):
@@ -560,17 +560,17 @@ containing the registered XML NS.
 		if (str != _PY_UNICODE_TYPE and type(data) == _PY_UNICODE_TYPE): data = _PY_STR(data, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.ns_get_uri({0})- (#echo(__LINE__)#)".format(data))
-		var_return = ""
+		_return = ""
 
 		re_result = XmlWriter.RE_NODE_NAME_XMLNS.match(data)
 
 		if (re_result != None):
 		#
-			if (re_result.group(1) in self.data_ns): var_return = self.data_ns[re_result.group(1)]
+			if (re_result.group(1) in self.data_ns): _return = self.data_ns[re_result.group(1)]
 		#
-		elif (data in self.data_ns): var_return = self.data_ns[data]
+		elif (data in self.data_ns): _return = self.data_ns[data]
 
-		return var_return
+		return _return
 	#
 
 	def ns_translate_name(self, node, name):
@@ -586,7 +586,7 @@ node.
 :since:  v0.1.00
 		"""
 
-		var_return = name
+		_return = name
 
 		re_result = XmlWriter.RE_NODE_NAME_XMLNS.match(name)
 
@@ -596,14 +596,14 @@ node.
 
 			if ("xml.mtree" in node[translated_name]):
 			#
-				if ("xml.item" in node[translated_name][0] and "@" in node[translated_name][0]['xml.item']['xmlns'] and node[translated_name][0]['xml.item']['xmlns']['@'] in self.data_ns_compact and self.data_ns_compact[node[translated_name][0]['xml.item']['xmlns']['@']] == self.data_ns[re_result.group(1)]): var_return = translated_name
-				elif ("xmlns" in node[translated_name][0] and "@" in node[translated_name][0]['xmlns'] and node[translated_name][0]['xmlns']['@'] in self.data_ns_compact and self.data_ns_compact[node[translated_name][0]['xmlns']['@']] == self.data_ns[re_result.group(1)]): var_return = translated_name
+				if ("xml.item" in node[translated_name][0] and "@" in node[translated_name][0]['xml.item']['xmlns'] and node[translated_name][0]['xml.item']['xmlns']['@'] in self.data_ns_compact and self.data_ns_compact[node[translated_name][0]['xml.item']['xmlns']['@']] == self.data_ns[re_result.group(1)]): _return = translated_name
+				elif ("xmlns" in node[translated_name][0] and "@" in node[translated_name][0]['xmlns'] and node[translated_name][0]['xmlns']['@'] in self.data_ns_compact and self.data_ns_compact[node[translated_name][0]['xmlns']['@']] == self.data_ns[re_result.group(1)]): _return = translated_name
 			#
-			elif ("xml.item" in node[translated_name] and "@" in node[translated_name]['xml.item']['xmlns'] and node[translated_name]['xml.item']['xmlns']['@'] in self.data_ns_compact and self.data_ns_compact[node[translated_name]['xml.item']['xmlns']['@']] == self.data_ns[re_result.group(1)]): var_return = translated_name
-			elif ("xmlns" in node[translated_name] and "@" in node[translated_name]['xmlns'] and node[translated_name]['xmlns']['@'] in self.data_ns_compact and self.data_ns_compact[node[translated_name]['xmlns']['@']] == self.data_ns[re_result.group(1)]): var_return = translated_name
+			elif ("xml.item" in node[translated_name] and "@" in node[translated_name]['xml.item']['xmlns'] and node[translated_name]['xml.item']['xmlns']['@'] in self.data_ns_compact and self.data_ns_compact[node[translated_name]['xml.item']['xmlns']['@']] == self.data_ns[re_result.group(1)]): _return = translated_name
+			elif ("xmlns" in node[translated_name] and "@" in node[translated_name]['xmlns'] and node[translated_name]['xmlns']['@'] in self.data_ns_compact and self.data_ns_compact[node[translated_name]['xmlns']['@']] == self.data_ns[re_result.group(1)]): _return = translated_name
 		#
 
-		return var_return
+		return _return
 	#
 #
 

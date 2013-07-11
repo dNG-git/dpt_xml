@@ -93,7 +93,7 @@ Uses the given XmlNodeReader to parse data for the defined parser instance.
 		"""
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_MonoXML(XmlNodeReader, strict_standard)- (#echo(__LINE__)#)")
-		var_return = { }
+		_return = { }
 
 		if (hasattr(XmlNodeReader, "Read")):
 		#
@@ -108,10 +108,10 @@ Uses the given XmlNodeReader to parse data for the defined parser instance.
 			XmlNodeReader.Close()
 
 			if (type(monoxml_dict) == dict): is_available = self.xml2dict_MonoXML_dict_walker(monoxml_dict, strict_standard)
-			if (is_available): var_return = self.parser.get()
+			if (is_available): _return = self.parser.get()
 		#
 
-		return var_return
+		return _return
 	#
 
 	def xml2dict_MonoXML_dict_walker(self, data_dict, strict_standard = True):
@@ -128,7 +128,7 @@ Imports a pre-parsed XML dict into the given parser instance.
 		"""
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_MonoXML_dict_walker(data_dict, strict_standard)- (#echo(__LINE__)#)")
-		var_return = False
+		_return = False
 
 		if (type(data_dict) == dict):
 		#
@@ -148,10 +148,10 @@ Imports a pre-parsed XML dict into the given parser instance.
 				for child_dict in data_dict['children']: self.xml2dict_MonoXML_dict_walker(child_dict, strict_standard)
 			#
 
-			var_return = True
+			_return = True
 		#
 
-		return var_return
+		return _return
 	#
 
 	def xml2dict_MonoXML_merged(self, XmlNodeReader):
@@ -168,7 +168,7 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 		global _PY_STR, _PY_UNICODE_TYPE
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_MonoXML_merged(XmlNodeReader)- (#echo(__LINE__)#)")
 
-		var_return = False
+		_return = False
 
 		if (hasattr(XmlNodeReader, "Read")):
 		#
@@ -237,18 +237,18 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 							del(nodes_dict[node_path]['attributes']['value'])
 						#
 
-						if (node_path in var_return):
+						if (node_path in _return):
 						#
-							if ("tag" in var_return[node_path]):
+							if ("tag" in _return[node_path]):
 							#
-								node_packed_dict = var_return[node_path].copy()
-								var_return[node_path] = [ node_packed_dict ]
+								node_packed_dict = _return[node_path].copy()
+								_return[node_path] = [ node_packed_dict ]
 								node_packed_dict = None
 							#
 
-							var_return[node_path].append(nodes_dict[node_path])
+							_return[node_path].append(nodes_dict[node_path])
 						#
-						else: var_return[node_path] = nodes_dict[node_path]
+						else: _return[node_path] = nodes_dict[node_path]
 
 						del(nodes_dict[node_path])
 					#
@@ -274,7 +274,7 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 			XmlNodeReader.Close()
 		#
 
-		return var_return
+		return _return
 	#
 
 	def xml2dict_MonoXML_walker(self, XmlNodeReader, strict_standard = True, node_path = "", xml_level = 0):
@@ -297,7 +297,7 @@ algorithm.
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_MonoXML_walker(XmlNodeReader, strict_standard, {0}, {1:d})- (#echo(__LINE__)#)".format(node_path, xml_level))
-		var_return = False
+		_return = False
 
 		if (hasattr (XmlNodeReader,"Read")):
 		#
@@ -385,10 +385,10 @@ algorithm.
 				else: is_node = False
 			#
 
-			var_return = { "node_path": node_path, "value": node_content, "attributes": attributes_dict, "children": nodes_list }
+			_return = { "node_path": node_path, "value": node_content, "attributes": attributes_dict, "children": nodes_list }
 		#
 
-		return var_return
+		return _return
 	#
 #
 
