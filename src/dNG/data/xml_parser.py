@@ -333,14 +333,18 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 							type_value = type(data['attributes'][key])
 
 							if (type_value == int or type_value == float): value = str(data['attributes'][key])
-							else: value = data['attributes'][key]
+							elif (data['attributes'][key] == None): value = ""
+							else:
+							#
+								value = data['attributes'][key]
 
-							if (str != _PY_UNICODE_TYPE and type(value) == _PY_UNICODE_TYPE): value = _PY_STR(value, "utf-8")
-							value = value.replace("&", "&amp;")
-							value = value.replace("<", "&lt;")
-							value = value.replace(">", "&gt;")
-							value = value.replace('"', "&quot;")
-							if (self.data_charset != "UTF-8"): value = value.encode(self.data_charset)
+								if (str != _PY_UNICODE_TYPE and type_value == _PY_UNICODE_TYPE): value = _PY_STR(value, "utf-8")
+								value = value.replace("&", "&amp;")
+								value = value.replace("<", "&lt;")
+								value = value.replace(">", "&gt;")
+								value = value.replace('"', "&quot;")
+								if (self.data_charset != "UTF-8"): value = value.encode(self.data_charset)
+							#
 
 							_return += " {0}=\"{1}\"".format(key, value)
 						#
