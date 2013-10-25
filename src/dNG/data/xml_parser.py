@@ -60,7 +60,7 @@ try:
 	_PY_STR = unicode.encode
 	_PY_UNICODE_TYPE = unicode
 #
-except:
+except NameError:
 #
 	_PY_STR = bytes.decode
 	_PY_UNICODE_TYPE = str
@@ -872,7 +872,7 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 			#
 			else: parser_ptr = expat.ParserCreate()
 		#
-		except: parser_ptr = None
+		except Exception: parser_ptr = None
 
 		if (_mode == "py" and parser_ptr != None):
 		#
