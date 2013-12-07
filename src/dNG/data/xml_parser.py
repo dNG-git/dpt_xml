@@ -83,11 +83,11 @@ This class provides a bridge between Python and XML to read XML on the fly.
 	"""
 RegExp to find xmlns attributes
 	"""
-	RE_NODE_NAME_XMLNS = re.compile("^(.+?):(\\w+)$")
+	RE_NODE_NAME_XMLNS = re.compile("^(.+):(\\w+)$")
 	"""
 RegExp to split XML namespace node names
 	"""
-	RE_NODE_POSITION = re.compile("^(.+?)\\#(\\d+)$")
+	RE_NODE_POSITION = re.compile("^(.+)\\#(\\d+)$")
 	"""
 RegExp to find node names with a specified position in a list
 	"""
@@ -235,11 +235,11 @@ Searches haystack for needle.
 :param haystack: Dict to search in
 
 :access: protected
-:return: (mixed) Key; False on error
+:return: (mixed) Key; None on error
 :since:  v0.1.00
 		"""
 
-		_return = False
+		_return = None
 
 		if (needle in haystack):
 		#
@@ -409,13 +409,12 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 		"""
 This operation just gives back the content of self.data.
 
-:return: (dict) XML dict tree; False on error
+:return: (dict) XML dict tree; None if not parsed error
 :since:  v0.1.00
 		"""
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.get()- (#echo(__LINE__)#)")
-
-		return (False if (self.data == None) else self.data)
+		return self.data
 	#
 
 	def node_add(self, node_path, value = "", attributes = "", add_recursively = True):
@@ -694,7 +693,7 @@ tag will be saved as "tag_ns" and "tag_parsed".
 			#
 				tag_ns = self.dict_search(self.data_ns_compact[node['xmlns'][re_result.group(1)]] ,self.data_ns)
 
-				if (tag_ns != False):
+				if (tag_ns != None):
 				#
 					_return['tag_ns'] = tag_ns
 					_return['tag_parsed'] = "{0}:{1}".format(tag_ns, re_result.group(2))
@@ -711,7 +710,7 @@ tag will be saved as "tag_ns" and "tag_parsed".
 					#
 						tag_ns = self.dict_search(self.data_ns_compact[node['xmlns'][re_result.group(1)]], self.data_ns)
 
-						if (tag_ns != False):
+						if (tag_ns != None):
 						#
 							_return['attributes']["{0}:{1}".format(tag_ns, re_result.group(2))] = node['attributes'][key]
 							del(_return['attributes'][key])
@@ -845,13 +844,13 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 :param strict_standard: True to be standard compliant
 :param treemode: Create a multi-dimensional result
 
-:return: (dict) Multi-dimensional XML tree or merged one; False on error
+:return: (dict) Multi-dimensional XML tree or merged one; None on error
 :since:  v0.1.00
 		"""
 
 		global _mode, _PY_STR, _PY_UNICODE_TYPE
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict(data, treemode, strict_standard)- (#echo(__LINE__)#)")
-		_return = False
+		_return = None
 
 		try:
 		#

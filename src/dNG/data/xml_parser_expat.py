@@ -129,12 +129,7 @@ Define the parser mode MODE_MERGED or MODE_TREE.
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.define_mode({0:d})- (#echo(__LINE__)#)".format(mode))
 
-		if ((not self.parser_active) and type(mode) == int):
-		#
-			if (mode == XmlParserExpat.MODE_MERGED): self.data_merged_mode = True
-			else: self.data_merged_mode = False
-		#
-
+		if ((not self.parser_active) and type(mode) == int): self.data_merged_mode = (mode == XmlParserExpat.MODE_MERGED)
 		return self.data_merged_mode
 	#
 
@@ -209,12 +204,8 @@ Method to handle "end element" callbacks.
 			self.node_path_depth -= 1
 			self.node_path = " ".join(self.node_path_list)
 
-			if ("value" in self.parser_cache[node_path]):
-			#
-				if ("xml:space" not in self.parser_cache[node_path]['attributes']): self.parser_cache[node_path]['value'] = self.parser_cache[node_path]['value'].strip()
-				elif (self.parser_cache[node_path]['attributes']['xml:space'] != "preserve"): self.parser_cache[node_path]['value'] = self.parser_cache[node_path]['value'].strip()
-			#
-			else: self.parser_cache[node_path]['value'] = ""
+			if ("value" not in self.parser_cache[node_path]): self.parser_cache[node_path]['value'] = ""
+			elif ("xml:space" not in self.parser_cache[node_path]['attributes'] or self.parser_cache[node_path]['attributes']['xml:space'] != "preserve"): self.parser_cache[node_path]['value'] = self.parser_cache[node_path]['value'].strip()
 
 			if ((not self.parser_strict_standard) and "value" in self.parser_cache[node_path]['attributes'] and len(self.parser_cache[node_path]['value']) < 1):
 			#
@@ -270,8 +261,7 @@ Method to handle "end element" callbacks. (Merged XML parser)
 
 		if (self.parser_active):
 		#
-			if (self.parser_cache_link[self.node_path] > 0): node_ptr = self.parser_cache[self.node_path][self.parser_cache_link[self.node_path]]
-			else: node_ptr = self.parser_cache[self.node_path]
+			node_ptr = (self.parser_cache[self.node_path][self.parser_cache_link[self.node_path]] if (self.parser_cache_link[self.node_path] > 0) else self.parser_cache[self.node_path])
 
 			self.node_path_list.pop()
 			self.node_path_depth -= 1
@@ -435,12 +425,12 @@ Method to handle "start element" callbacks.
 Adds the result of an expat parsing operation to the defined XML instance if
 the parser completed its work.
 
-:return: (dict) Multi-dimensional XML tree
+:return: (dict) Multi-dimensional XML tree; None on error
 :since:  v0.1.00
 		"""
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_expat()- (#echo(__LINE__)#)")
-		_return = { }
+		_return = None
 
 		if ((not self.parser_active) and type(self.parser_cache) == dict and len(self.parser_cache) > 0):
 		#
@@ -465,12 +455,12 @@ the parser completed its work.
 Returns the merged result of an expat parsing operation if the parser
 completed its work.
 
-:return: (dict) Merged XML tree
+:return: (dict) Merged XML tree; None on error
 :since:  v0.1.00
 		"""
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2array_expat_merged()- (#echo(__LINE__)#)")
-		_return = { }
+		_return = None
 
 		if ((not self.parser_active) and type(self.parser_cache) == dict and len(self.parser_cache) > 0):
 		#

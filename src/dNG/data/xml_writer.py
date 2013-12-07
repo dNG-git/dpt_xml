@@ -179,7 +179,7 @@ handled by the calling code.
 		if (type(node_path) == str and type(attributes) == dict):
 		#
 			node_path = self.ns_translate_path(node_path)
-			node_ptr = self.node_get_ptr(node_path)
+			node_ptr = self._node_get_ptr(node_path)
 
 			if (isinstance(node_ptr, dict)):
 			#
@@ -216,7 +216,7 @@ Change the value of a specified node.
 		if (type(node_path) == str and (not isinstance(_type, dict)) and (not isinstance(_type, list))):
 		#
 			node_path = self.ns_translate_path(node_path)
-			node_ptr = self.node_get_ptr(node_path)
+			node_ptr = self._node_get_ptr(node_path)
 
 			if (isinstance(node_ptr, dict)):
 			#
@@ -260,7 +260,7 @@ Get the parent node of the target.
 			#
 				node_name = node_path_list.pop()
 				node_path = " ".join(node_path_list)
-				node_ptr = self.node_get_ptr(node_path)
+				node_ptr = self._node_get_ptr(node_path)
 			#
 			else:
 			#
@@ -286,7 +286,7 @@ Read a specified node including all children if applicable.
 :param node_path: Path to the node; delimiter is space
 :param remove_metadata: False to not remove the xml.item node
 
-:return: (dict) XML node element; False on error
+:return: (dict) XML node element; None on error
 :since:  v0.1.00
 		"""
 
@@ -294,12 +294,12 @@ Read a specified node including all children if applicable.
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_get({0})- (#echo(__LINE__)#)".format(node_path))
-		_return = False
+		_return = None
 
 		if (type(node_path) == str):
 		#
 			node_path = self.ns_translate_path(node_path)
-			node_ptr = self.node_get_ptr(node_path)
+			node_ptr = self._node_get_ptr(node_path)
 
 			if (isinstance(node_ptr, dict)):
 			#
@@ -311,7 +311,35 @@ Read a specified node including all children if applicable.
 		return _return
 	#
 
-	def node_get_ptr(self, node_path):
+	def node_get_attributes(self, node_path):
+	#
+		"""
+Returns the attributes of a specified node.
+
+:param node_path: Path to the node; delimiter is space
+
+:return: (str) Attributes for the node; None if undefined
+:since:  v0.1.00
+		"""
+
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
+
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_get_attributes({0})- (#echo(__LINE__)#)".format(node_path))
+		_return = None
+
+		if (type(node_path) == str):
+		#
+			node_path = self.ns_translate_path(node_path)
+			node_ptr = self._node_get_ptr(node_path)
+
+			if (isinstance(node_ptr, dict)): _return = (node_ptr['xml.item']['attributes'] if ("xml.item" in node_ptr) else node_ptr['attributes'])
+		#
+
+		return _return
+	#
+
+	def _node_get_ptr(self, node_path):
 	#
 		"""
 Returns the pointer to a specific node.
@@ -325,8 +353,8 @@ Returns the pointer to a specific node.
 		global _PY_STR, _PY_UNICODE_TYPE
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_get_ptr({0})- (#echo(__LINE__)#)".format(node_path))
-		_return = False
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml._node_get_ptr({0})- (#echo(__LINE__)#)".format(node_path))
+		_return = None
 
 		if (type(node_path) == str):
 		#
@@ -387,6 +415,34 @@ Returns the pointer to a specific node.
 		return _return
 	#
 
+	def node_get_value(self, node_path):
+	#
+		"""
+Returns the value of a specified node.
+
+:param node_path: Path to the node; delimiter is space
+
+:return: (str) Value for the node; None if undefined
+:since:  v0.1.00
+		"""
+
+		global _PY_STR, _PY_UNICODE_TYPE
+		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
+
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_get_value({0})- (#echo(__LINE__)#)".format(node_path))
+		_return = None
+
+		if (type(node_path) == str):
+		#
+			node_path = self.ns_translate_path(node_path)
+			node_ptr = self._node_get_ptr(node_path)
+
+			if (isinstance(node_ptr, dict)): _return = (node_ptr['xml.item']['value'] if ("xml.item" in node_ptr) else node_ptr['value'])
+		#
+
+		return _return
+	#
+
 	def node_remove(self, node_path):
 	#
 		"""
@@ -417,7 +473,7 @@ Get the parent node of the target.
 			#
 				node_name = node_path_list.pop()
 				node_path = " ".join(node_path_list)
-				node_ptr = self.node_get_ptr(node_path)
+				node_ptr = self._node_get_ptr(node_path)
 
 				if (len(self.data_cache_node) > 0 and node_path[:len(self.data_cache_node)] == self.data_cache_node):
 				#
@@ -486,12 +542,10 @@ Update the mtree counter or remove it if applicable.
 									node_dict[node_position] = value
 									node_position += 1
 								#
+
+								node_ptr[node_name] = node_dict
 							#
-							else:
-							#
-								del(node_ptr[node_name]['xml.mtree'])
-								node_ptr[node_name] = node_ptr[node_name].pop()
-							#
+							else: node_ptr[node_name] = node_ptr[node_name][0]
 						#
 					#
 					else:
@@ -530,7 +584,7 @@ Set the cache pointer to a specific node.
 			if (node_path == self.data_cache_node): _return = True
 			else:
 			#
-				node_ptr = self.node_get_ptr(node_path)
+				node_ptr = self._node_get_ptr(node_path)
 
 				if (isinstance(node_ptr, dict)):
 				#

@@ -161,17 +161,17 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 
 :param XmlNodeReader: XmlNodeReader object
 
-:return: (dict) Merged XML tree
+:return: (dict) Merged XML tree; None on error
 :since:  v0.1.00
 		"""
 
 		global _PY_STR, _PY_UNICODE_TYPE
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_MonoXML_merged(XmlNodeReader)- (#echo(__LINE__)#)")
 
-		_return = False
-
 		if (hasattr(XmlNodeReader, "Read")):
 		#
+			_return = { }
+
 			depth = 0
 			is_read = False
 			is_valid = True
@@ -273,6 +273,7 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 
 			XmlNodeReader.Close()
 		#
+		else: _return = None
 
 		return _return
 	#
@@ -289,7 +290,7 @@ algorithm.
 :param xml_level: Current XML depth
 
 :access: protected
-:return: (dict) XML tree node; False on error
+:return: (dict) XML tree node; None on error
 :since:  v0.1.00
 		"""
 
@@ -297,7 +298,7 @@ algorithm.
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_MonoXML_walker(XmlNodeReader, strict_standard, {0}, {1:d})- (#echo(__LINE__)#)".format(node_path, xml_level))
-		_return = False
+		_return = None
 
 		if (hasattr (XmlNodeReader,"Read")):
 		#
@@ -351,11 +352,7 @@ algorithm.
 				is_read = XmlNodeReader.Read()
 			#
 
-			if (is_node):
-			#
-				if (len(node_path) > 0): node_path = "{0} {1}".format(node_path, node_name)
-				else: node_path = node_name
-			#
+			if (is_node): node_path = ("{0} {1}".format(node_path, node_name) if (len(node_path) > 0) else node_name)
 
 			while (is_node and time() < timeout_time):
 			#
