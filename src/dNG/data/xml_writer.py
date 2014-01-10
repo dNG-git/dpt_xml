@@ -178,7 +178,7 @@ handled by the calling code.
 
 		if (type(node_path) == str and type(attributes) == dict):
 		#
-			node_path = self.ns_translate_path(node_path)
+			node_path = self._ns_translate_path(node_path)
 			node_ptr = self._node_get_ptr(node_path)
 
 			if (isinstance(node_ptr, dict)):
@@ -215,7 +215,7 @@ Change the value of a specified node.
 
 		if (type(node_path) == str and (not isinstance(_type, dict)) and (not isinstance(_type, list))):
 		#
-			node_path = self.ns_translate_path(node_path)
+			node_path = self._ns_translate_path(node_path)
 			node_ptr = self._node_get_ptr(node_path)
 
 			if (isinstance(node_ptr, dict)):
@@ -253,7 +253,7 @@ Count the occurrence of a specified node.
 Get the parent node of the target.
 			"""
 
-			node_path = self.ns_translate_path(node_path)
+			node_path = self._ns_translate_path(node_path)
 			node_path_list = node_path.split(" ")
 
 			if (len(node_path_list) > 1):
@@ -298,7 +298,7 @@ Read a specified node including all children if applicable.
 
 		if (type(node_path) == str):
 		#
-			node_path = self.ns_translate_path(node_path)
+			node_path = self._ns_translate_path(node_path)
 			node_ptr = self._node_get_ptr(node_path)
 
 			if (isinstance(node_ptr, dict)):
@@ -330,7 +330,7 @@ Returns the attributes of a specified node.
 
 		if (type(node_path) == str):
 		#
-			node_path = self.ns_translate_path(node_path)
+			node_path = self._ns_translate_path(node_path)
 			node_ptr = self._node_get_ptr(node_path)
 
 			if (isinstance(node_ptr, dict)): _return = (node_ptr['xml.item']['attributes'] if ("xml.item" in node_ptr) else node_ptr['attributes'])
@@ -358,7 +358,7 @@ Returns the pointer to a specific node.
 
 		if (type(node_path) == str):
 		#
-			if (len(self.data_cache_node) > 0 and node_path[:len(self.data_cache_node)] == self.data_cache_node):
+			if (self.data_cache_node != "" and node_path[:len(self.data_cache_node)] == self.data_cache_node):
 			#
 				node_path = node_path[len(self.data_cache_node):].strip()
 				node_ptr = self.data_cache_ptr
@@ -434,7 +434,7 @@ Returns the value of a specified node.
 
 		if (type(node_path) == str):
 		#
-			node_path = self.ns_translate_path(node_path)
+			node_path = self._ns_translate_path(node_path)
 			node_ptr = self._node_get_ptr(node_path)
 
 			if (isinstance(node_ptr, dict)): _return = (node_ptr['xml.item']['value'] if ("xml.item" in node_ptr) else node_ptr['value'])
@@ -466,7 +466,7 @@ Remove a node and all children if applicable.
 Get the parent node of the target.
 			"""
 
-			node_path = self.ns_translate_path(node_path)
+			node_path = self._ns_translate_path(node_path)
 			node_path_list = node_path.split(" ")
 
 			if (len (node_path_list) > 1):
@@ -475,7 +475,7 @@ Get the parent node of the target.
 				node_path = " ".join(node_path_list)
 				node_ptr = self._node_get_ptr(node_path)
 
-				if (len(self.data_cache_node) > 0 and node_path[:len(self.data_cache_node)] == self.data_cache_node):
+				if (self.data_cache_node != "" and node_path[:len(self.data_cache_node)] == self.data_cache_node):
 				#
 					self.data_cache_node = ""
 					self.data_cache_ptr = self.data
@@ -551,6 +551,7 @@ Update the mtree counter or remove it if applicable.
 					else:
 					#
 						del(node_ptr[node_name])
+						self.node_remove_ns_cache(node_path)
 						_return = True
 					#
 				#
@@ -558,6 +559,23 @@ Update the mtree counter or remove it if applicable.
 		#
 
 		return _return
+	#
+
+	def node_remove_ns_cache(self, node_path):
+	#
+		"""
+Removes cached XML namespace data of the given XML node.
+
+:param node_path: XML node path
+
+:since: v0.1.00
+		"""
+
+		if (node_path in self.data_ns_predefined_compact):
+		#
+			del(self.data_ns_predefined_default[self.data_ns_predefined_compact[node_path]])
+			del(self.data_ns_predefined_compact[node_path])
+		#
 	#
 
 	def node_set_cache_path(self, node_path):
@@ -579,7 +597,7 @@ Set the cache pointer to a specific node.
 
 		if (type(node_path) == str):
 		#
-			node_path = self.ns_translate_path(node_path)
+			node_path = self._ns_translate_path(node_path)
 
 			if (node_path == self.data_cache_node): _return = True
 			else:

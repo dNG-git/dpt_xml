@@ -226,36 +226,6 @@ completed.
 		return self.data_parse_only
 	#
 
-	def dict_search(self, needle, haystack):
-	#
-		"""
-Searches haystack for needle. 
-
-:param needle: Value to be searched for
-:param haystack: Dict to search in
-
-:access: protected
-:return: (mixed) Key; None on error
-:since:  v0.1.00
-		"""
-
-		_return = None
-
-		if (needle in haystack):
-		#
-			for key in haystack:
-			#
-				if (haystack[key] == needle):
-				#
-					_return = key
-					break
-				#
-			#
-		#
-
-		return _return
-	#
-
 	def dict2xml(self, xml_tree, strict_standard = True):
 	#
 		"""
@@ -442,9 +412,9 @@ Adds a XML node with content - recursively if required.
 
 		if (type(node_path) == str and type_value == str or type_value == _PY_UNICODE_TYPE):
 		#
-			node_path = self.ns_translate_path(node_path)
+			node_path = self._ns_translate_path(node_path)
 
-			if (len(self.data_cache_node) == 0 or re.match("^{0}".format(re.escape(node_path)), self.data_cache_node,re.I) == None):
+			if (self.data_cache_node == "" or re.match("^{0}".format(re.escape(node_path)), self.data_cache_node,re.I) == None):
 			#
 				node_path_done = ""
 				node_ptr = self.data
@@ -507,9 +477,7 @@ Adds a XML node with content - recursively if required.
 						else:
 						#
 							is_available = True
-
-							node_ptr[node_name]['level'] = ((1 + node_ptr['xml.item']['level']) if ("xml.item" in node_ptr and "level" in node_ptr['xml.item']) else 1)
-							node_ptr[node_name] = self.node_type([ ( "xml.item", node_ptr[node_name] ) ])
+							self._node_covert_intermediate(node_ptr, node_path_done, node_name)
 							node_ptr = node_ptr[node_name]
 						#
 					#
@@ -521,24 +489,21 @@ Adds a XML node with content - recursively if required.
 						if ("xml.item" in node_ptr):
 						#
 							if ("level" in node_ptr['xml.item']): node_dict['level'] = (1 + node_ptr['xml.item']['level'])
-							if ("xmlns" in node_ptr['xml.item']): node_dict['xmlns'] = node_ptr['xml.item']['xmlns']
+							if ("xmlns" in node_ptr['xml.item']): node_dict['xmlns'] = node_ptr['xml.item']['xmlns'].copy()
 						#
 
-						self.node_add_ns_cache(node_path_done, node_name, node_dict)
+						self._node_add_ns_cache(node_path_done, node_name, node_dict)
 
 						is_available = True
 						node_ptr[node_name] = self.node_type([ ( "xml.item", node_dict ) ])
 						node_ptr = node_ptr[node_name]
 					#
-
-					if (len(node_path_done) > 0): node_path_done += " "
-					node_path_done += node_name
 				#
 				else:
 				#
 					node_dict = self.node_type(tag = node_name, value = value, xmlns = { })
 
-					if ("xml.item" in node_ptr and "xmlns" in node_ptr['xml.item']): node_dict['xmlns'] = node_ptr['xml.item']['xmlns']
+					if ("xml.item" in node_ptr and "xmlns" in node_ptr['xml.item']): node_dict['xmlns'] = node_ptr['xml.item']['xmlns'].copy()
 
 					if (isinstance(attributes, dict) and len(attributes) > 0):
 					#
@@ -575,7 +540,7 @@ Adds a XML node with content - recursively if required.
 						node_dict['attributes'] = attributes
 					#
 
-					self.node_add_ns_cache(node_path_done, node_name, node_dict)
+					self._node_add_ns_cache(node_path_done, node_name, node_dict)
 
 					if (node_name in node_ptr):
 					#
@@ -594,13 +559,16 @@ Adds a XML node with content - recursively if required.
 
 					_return = True
 				#
+
+				if (len(node_path_done) > 0): node_path_done += " "
+				node_path_done += node_name
 			#
 		#
 
 		return _return
 	#
 
-	def node_add_ns_cache(self, node_path_done, node_name, node_dict):
+	def _node_add_ns_cache(self, node_path_done, node_name, node_dict):
 	#
 		"""
 Caches XML namespace data for the given XML node.
@@ -637,6 +605,30 @@ Caches XML namespace data for the given XML node.
 			self.data_ns_predefined_default[node_ns_name] = node_name
 		#
 	#
+
+	def _node_covert_intermediate(self, node_ptr, node_path_done, node_name):
+	#
+		"""
+Caches XML namespace data for the given XML node.
+
+:param node_ptr: Parent XML node pointer
+:param node_path_done: XML node path containing the given XML node
+:param node_name: XML leaf name to be converted to a node
+
+:since: v0.1.00
+		"""
+
+		node_ptr[node_name]['level'] = ((1 + node_ptr['xml.item']['level']) if ("xml.item" in node_ptr and "level" in node_ptr['xml.item']) else 1)
+		node_ptr[node_name] = self.node_type([ ( "xml.item", node_ptr[node_name] ) ])
+		node_ptr = node_ptr[node_name]
+
+		if (self.data_cache_node != ""):
+		#
+			node_path_changed = ("{0} {1}".format(node_path_done, node_name) if (len(node_path_done) > 0) else node_name)
+			if (self.data_cache_node == node_path_changed): self.data_cache_ptr = node_ptr
+		#
+	#
+
 	def ns_register(self, ns, uri):
 	#
 		"""
@@ -691,7 +683,7 @@ tag will be saved as "tag_ns" and "tag_parsed".
 
 			if (re_result != None and re_result.group(1) in node['xmlns'] and node['xmlns'][re_result.group(1)] in self.data_ns_compact):
 			#
-				tag_ns = self.dict_search(self.data_ns_compact[node['xmlns'][re_result.group(1)]] ,self.data_ns)
+				tag_ns = XmlParser._dict_search(self.data_ns_compact[node['xmlns'][re_result.group(1)]] ,self.data_ns)
 
 				if (tag_ns != None):
 				#
@@ -708,7 +700,7 @@ tag will be saved as "tag_ns" and "tag_parsed".
 
 					if (re_result != None and re_result.group(1) in node['xmlns'] and node['xmlns'][re_result.group(1)] in self.data_ns_compact):
 					#
-						tag_ns = self.dict_search(self.data_ns_compact[node['xmlns'][re_result.group(1)]], self.data_ns)
+						tag_ns = XmlParser._dict_search(self.data_ns_compact[node['xmlns'][re_result.group(1)]], self.data_ns)
 
 						if (tag_ns != None):
 						#
@@ -723,7 +715,7 @@ tag will be saved as "tag_ns" and "tag_parsed".
 		return _return
 	#
 
-	def ns_translate_path(self, node_path):
+	def _ns_translate_path(self, node_path):
 	#
 		"""
 Checks input path for predefined namespaces converts it to the internal
@@ -738,7 +730,7 @@ path.
 		global _PY_STR, _PY_UNICODE_TYPE
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.ns_translate_path({0})- (#echo(__LINE__)#)".format(node_path))
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml._ns_translate_path({0})- (#echo(__LINE__)#)".format(node_path))
 		_return = node_path
 
 		nodes_list = node_path.split(" ")
@@ -904,6 +896,37 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 		#
 			self.data = None
 			self.ns_unregister()
+		#
+
+		return _return
+	#
+
+	@staticmethod
+	def _dict_search(needle, haystack):
+	#
+		"""
+Searches haystack for needle. 
+
+:param needle: Value to be searched for
+:param haystack: Dict to search in
+
+:access: protected
+:return: (mixed) Key; None on error
+:since:  v0.1.00
+		"""
+
+		_return = None
+
+		if (needle in haystack):
+		#
+			for key in haystack:
+			#
+				if (haystack[key] == needle):
+				#
+					_return = key
+					break
+				#
+			#
 		#
 
 		return _return
