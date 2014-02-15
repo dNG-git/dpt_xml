@@ -23,6 +23,8 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=invalid-name,undefined-variable
+
 try:
 #
 	_PY_STR = unicode.encode
@@ -144,7 +146,8 @@ Changes the parser mode regarding being strict standard compliant.
 :since:  v0.1.00
 		"""
 
-		global _PY_STR, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_UNICODE_TYPE
+
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.define_strict_standard(strict_standard)- (#echo(__LINE__)#)")
 
 		if (str != _PY_UNICODE_TYPE and type(strict_standard) == _PY_UNICODE_TYPE): strict_standard = _PY_STR(strict_standard, "utf-8")
@@ -190,7 +193,8 @@ Method to handle "end element" callbacks.
 :since: v0.1.00
 		"""
 
-		global _PY_STR, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_UNICODE_TYPE
+
 		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.expat_element_end({0})- (#echo(__LINE__)#)".format(name))
@@ -254,7 +258,8 @@ Method to handle "end element" callbacks. (Merged XML parser)
 :since: v0.1.00
 		"""
 
-		global _PY_STR, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_UNICODE_TYPE
+
 		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.expat_merged_element_end({0})- (#echo(__LINE__)#)".format(name))
@@ -295,7 +300,8 @@ Method to handle "start element" callbacks. (Merged XML parser)
 :since: v0.1.00
 		"""
 
-		global _PY_STR, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_UNICODE_TYPE
+
 		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.expat_merged_element_start({0}, attributes)- (#echo(__LINE__)#)".format(name))
@@ -366,7 +372,8 @@ Method to handle "start element" callbacks.
 :since: v0.1.00
 		"""
 
-		global _PY_STR, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_UNICODE_TYPE
+
 		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.expat_element_start({0}, attributes)- (#echo(__LINE__)#)".format(name))

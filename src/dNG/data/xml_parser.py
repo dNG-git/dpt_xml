@@ -25,6 +25,8 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=import-error,invalid-name,unused-import
+
 from cgi import escape as html_escape
 import re
 
@@ -111,7 +113,7 @@ Constructor __init__(XmlParser)
 :since: v0.1.00
 		"""
 
-		global _mode
+		# global: _mode
 
 		self.data = None
 		"""
@@ -190,13 +192,13 @@ Uses or disables CDATA nodes to encode embedded XML.
 :since:  v0.1.00
 		"""
 
-		global _PY_STR, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_UNICODE_TYPE
 
 		if (str != _PY_UNICODE_TYPE and type(use_cdata) == _PY_UNICODE_TYPE): use_cdata = _PY_STR(use_cdata, "utf-8")
 		_type = type(use_cdata)
 
 		if ((_type == bool or _type == str) and use_cdata): self.data_cdata_encoding = True
-		elif (use_cdata == None and (not self.data_use_cdata)): self.data_cdata_encoding = True
+		elif (use_cdata == None and (not self.data_cdata_encoding)): self.data_cdata_encoding = True
 		else: self.data_cdata_encoding = False
 
 		return self.data_cdata_encoding
@@ -214,7 +216,7 @@ completed.
 :since:  v0.1.00
 		"""
 
-		global _PY_STR, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_UNICODE_TYPE
 
 		if (str != _PY_UNICODE_TYPE and type(parse_only) == _PY_UNICODE_TYPE): parse_only = _PY_STR(parse_only, "utf-8")
 		_type = type(parse_only)
@@ -281,7 +283,8 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 :since:  v0.1.00
 		"""
 
-		global _PY_STR, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_UNICODE_TYPE
+
 		_return = ""
 
 		is_value_attr_compatible = (False if (strict_standard) else True)
@@ -401,7 +404,8 @@ Adds a XML node with content - recursively if required.
 :since:  v0.1.00
 		"""
 
-		global _PY_STR, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_UNICODE_TYPE
+
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.node_add({0}, value, attributes, add_recursively)- (#echo(__LINE__)#)".format(node_path))
@@ -640,7 +644,7 @@ Registers a namespace (URI) for later use with this XML reader instance.
 :since: v0.1.00
 		"""
 
-		global _PY_STR, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_UNICODE_TYPE
 
 		if (str != _PY_UNICODE_TYPE):
 		#
@@ -727,7 +731,8 @@ path.
 :since:  v0.1.00
 		"""
 
-		global _PY_STR, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_UNICODE_TYPE
+
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml._ns_translate_path({0})- (#echo(__LINE__)#)".format(node_path))
@@ -765,7 +770,8 @@ Unregisters a namespace or clears the cache (if ns is empty).
 :since: v0.1.00
 		"""
 
-		global _PY_STR, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_UNICODE_TYPE
+
 		if (str != _PY_UNICODE_TYPE and type(ns) == _PY_UNICODE_TYPE): ns = _PY_STR(ns, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.ns_unregister({0})- (#echo(__LINE__)#)".format(ns))
@@ -840,7 +846,9 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 :since:  v0.1.00
 		"""
 
-		global _mode, _PY_STR, _PY_UNICODE_TYPE
+		# global: _mode, _PY_STR, _PY_UNICODE_TYPE
+		# pylint: disable=broad-except
+
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict(data, treemode, strict_standard)- (#echo(__LINE__)#)")
 		_return = None
 
@@ -905,7 +913,7 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 	def _dict_search(needle, haystack):
 	#
 		"""
-Searches haystack for needle. 
+Searches haystack for needle.
 
 :param needle: Value to be searched for
 :param haystack: Dict to search in

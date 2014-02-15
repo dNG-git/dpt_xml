@@ -23,6 +23,8 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=import-error,invalid-name
+
 from System.Xml import XmlNodeType
 from time import time
 
@@ -165,7 +167,8 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 :since:  v0.1.00
 		"""
 
-		global _PY_STR, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_UNICODE_TYPE
+
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_MonoXML_merged(XmlNodeReader)- (#echo(__LINE__)#)")
 
 		if (hasattr(XmlNodeReader, "Read")):
@@ -294,7 +297,8 @@ algorithm.
 :since:  v0.1.00
 		"""
 
-		global _PY_STR, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_UNICODE_TYPE
+
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_MonoXML_walker(XmlNodeReader, strict_standard, {0}, {1:d})- (#echo(__LINE__)#)".format(node_path, xml_level))
