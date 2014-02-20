@@ -188,7 +188,14 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 			#
 				if (XmlNodeReader.NodeType == XmlNodeType.CDATA):
 				#
-					if (node_path in nodes_dict): nodes_dict[node_path]['value'] += (XmlNodeReader.Value if ("xml:space" in nodes_dict[node_path]['attributes'] and nodes_dict[node_path]['attributes']['xml:space'] == "preserve") else XmlNodeReader.Value.strip())
+					if (node_path in nodes_dict):
+					#
+						nodes_dict[node_path]['value'] += (
+							XmlNodeReader.Value
+							if ("xml:space" in nodes_dict[node_path]['attributes'] and nodes_dict[node_path]['attributes']['xml:space'] == "preserve") else
+							XmlNodeReader.Value.strip()
+						)
+					#
 				#
 				elif (XmlNodeReader.NodeType == XmlNodeType.Element):
 				#
@@ -226,7 +233,14 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 					is_valid = XmlNodeReader.Read()
 					node_change_check = True
 				#
-				elif (XmlNodeReader.NodeType == XmlNodeType.Text and node_path in nodes_dict): nodes_dict[node_path]['value'] += (XmlNodeReader.Value if ("xml:space" in nodes_dict[node_path]['attributes'] and nodes_dict[node_path]['attributes']['xml:space'] == "preserve") else XmlNodeReader.Value.strip())
+				elif (XmlNodeReader.NodeType == XmlNodeType.Text and node_path in nodes_dict):
+				#
+					nodes_dict[node_path]['value'] += (
+						XmlNodeReader.Value
+						if ("xml:space" in nodes_dict[node_path]['attributes'] and nodes_dict[node_path]['attributes']['xml:space'] == "preserve") else
+						XmlNodeReader.Value.strip()
+					)
+				#
 
 				if (node_change_check):
 				#
@@ -374,7 +388,10 @@ algorithm.
 						XmlNodeReader.Read()
 					#
 					elif (XmlNodeReader.NodeType == XmlNodeType.Text): node_content += (XmlNodeReader.Value if (is_preserved_mode) else XmlNodeReader.Value.strip())
-					elif (is_preserved_mode and (XmlNodeReader.NodeType == XmlNodeType.Whitespace or XmlNodeReader.NodeType == XmlNodeType.SignificantWhitespace)): node_content += XmlNodeReader.Value
+					elif (
+						is_preserved_mode and
+						(XmlNodeReader.NodeType == XmlNodeType.Whitespace or XmlNodeReader.NodeType == XmlNodeType.SignificantWhitespace)
+					): node_content += XmlNodeReader.Value
 
 					if (is_read):
 					#

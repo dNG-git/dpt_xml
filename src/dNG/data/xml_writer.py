@@ -681,11 +681,31 @@ node.
 
 			if ("xml.mtree" in node[translated_name]):
 			#
-				if ("xml.item" in node[translated_name][0] and "@" in node[translated_name][0]['xml.item']['xmlns'] and node[translated_name][0]['xml.item']['xmlns']['@'] in self.data_ns_compact and self.data_ns_compact[node[translated_name][0]['xml.item']['xmlns']['@']] == self.data_ns[re_result.group(1)]): _return = translated_name
-				elif ("xmlns" in node[translated_name][0] and "@" in node[translated_name][0]['xmlns'] and node[translated_name][0]['xmlns']['@'] in self.data_ns_compact and self.data_ns_compact[node[translated_name][0]['xmlns']['@']] == self.data_ns[re_result.group(1)]): _return = translated_name
+				if (
+					"xml.item" in node[translated_name][0] and
+					"@" in node[translated_name][0]['xml.item']['xmlns'] and
+					node[translated_name][0]['xml.item']['xmlns']['@'] in self.data_ns_compact and
+					self.data_ns_compact[node[translated_name][0]['xml.item']['xmlns']['@']] == self.data_ns[re_result.group(1)]
+				): _return = translated_name
+				elif (
+					"xmlns" in node[translated_name][0] and
+					"@" in node[translated_name][0]['xmlns'] and
+					node[translated_name][0]['xmlns']['@'] in self.data_ns_compact and
+					self.data_ns_compact[node[translated_name][0]['xmlns']['@']] == self.data_ns[re_result.group(1)]
+				): _return = translated_name
 			#
-			elif ("xml.item" in node[translated_name] and "@" in node[translated_name]['xml.item']['xmlns'] and node[translated_name]['xml.item']['xmlns']['@'] in self.data_ns_compact and self.data_ns_compact[node[translated_name]['xml.item']['xmlns']['@']] == self.data_ns[re_result.group(1)]): _return = translated_name
-			elif ("xmlns" in node[translated_name] and "@" in node[translated_name]['xmlns'] and node[translated_name]['xmlns']['@'] in self.data_ns_compact and self.data_ns_compact[node[translated_name]['xmlns']['@']] == self.data_ns[re_result.group(1)]): _return = translated_name
+			elif (
+				"xml.item" in node[translated_name] and
+				"@" in node[translated_name]['xml.item']['xmlns'] and
+				node[translated_name]['xml.item']['xmlns']['@'] in self.data_ns_compact and
+				self.data_ns_compact[node[translated_name]['xml.item']['xmlns']['@']] == self.data_ns[re_result.group(1)]
+			): _return = translated_name
+			elif (
+				"xmlns" in node[translated_name] and
+				"@" in node[translated_name]['xmlns'] and
+				node[translated_name]['xmlns']['@'] in self.data_ns_compact and
+				self.data_ns_compact[node[translated_name]['xmlns']['@']] == self.data_ns[re_result.group(1)]
+			): _return = translated_name
 		#
 
 		return _return

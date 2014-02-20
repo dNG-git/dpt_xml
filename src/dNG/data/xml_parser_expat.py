@@ -209,9 +209,16 @@ Method to handle "end element" callbacks.
 			self.node_path = " ".join(self.node_path_list)
 
 			if ("value" not in self.parser_cache[node_path]): self.parser_cache[node_path]['value'] = ""
-			elif ("xml:space" not in self.parser_cache[node_path]['attributes'] or self.parser_cache[node_path]['attributes']['xml:space'] != "preserve"): self.parser_cache[node_path]['value'] = self.parser_cache[node_path]['value'].strip()
+			elif (
+				"xml:space" not in self.parser_cache[node_path]['attributes'] or
+				self.parser_cache[node_path]['attributes']['xml:space'] != "preserve"
+			): self.parser_cache[node_path]['value'] = self.parser_cache[node_path]['value'].strip()
 
-			if ((not self.parser_strict_standard) and "value" in self.parser_cache[node_path]['attributes'] and len(self.parser_cache[node_path]['value']) < 1):
+			if (
+				(not self.parser_strict_standard) and
+				"value" in self.parser_cache[node_path]['attributes'] and
+				len(self.parser_cache[node_path]['value']) < 1
+			):
 			#
 				self.parser_cache[node_path]['value'] = self.parser_cache[node_path]['attributes']['value']
 				del(self.parser_cache[node_path]['attributes']['value'])
@@ -266,7 +273,11 @@ Method to handle "end element" callbacks. (Merged XML parser)
 
 		if (self.parser_active):
 		#
-			node_ptr = (self.parser_cache[self.node_path][self.parser_cache_link[self.node_path]] if (self.parser_cache_link[self.node_path] > 0) else self.parser_cache[self.node_path])
+			node_ptr = (
+				self.parser_cache[self.node_path][self.parser_cache_link[self.node_path]]
+				if (self.parser_cache_link[self.node_path] > 0) else
+				self.parser_cache[self.node_path]
+			)
 
 			self.node_path_list.pop()
 			self.node_path_depth -= 1

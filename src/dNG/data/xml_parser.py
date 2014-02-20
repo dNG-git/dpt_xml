@@ -257,7 +257,12 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 				elif ("xml.item" in xml_node_dict):
 				#
 					_return += self.dict2xml_item_encoder (xml_node_dict['xml.item'], False, strict_standard)
-					xml_node_tag = (xml_node_dict['xml.item']['tag'] if (XmlParser.RE_TAG_DIGIT.match(xml_node_dict['xml.item']['tag']) == None) else "digitstart__{0}".format(xml_node_dict['xml.item']['tag']))
+
+					xml_node_tag = (
+						xml_node_dict['xml.item']['tag']
+						if (XmlParser.RE_TAG_DIGIT.match(xml_node_dict['xml.item']['tag']) == None) else
+						"digitstart__{0}".format(xml_node_dict['xml.item']['tag'])
+					)
 
 					del(xml_node_dict['xml.item'])
 					_return += "{0}</{1}>".format(self.dict2xml(xml_node_dict, strict_standard), xml_node_tag)
@@ -469,7 +474,11 @@ Adds a XML node with content - recursively if required.
 
 							if (is_available):
 							#
-								if ((not isinstance(node_ptr[node_name][node_position], dict)) or "xml.item" not in node_ptr[node_name][node_position]): node_ptr[node_name][node_position] = { "xml.item": node_ptr[node_name][node_position] }
+								if (
+									(not isinstance(node_ptr[node_name][node_position], dict)) or
+									"xml.item" not in node_ptr[node_name][node_position]
+								): node_ptr[node_name][node_position] = { "xml.item": node_ptr[node_name][node_position] }
+
 								node_ptr = node_ptr[node_name][node_position]
 							#
 						#
@@ -589,13 +598,20 @@ Caches XML namespace data for the given XML node.
 
 		if (re_result != None):
 		#
-			if (re_result.group(1) in node_dict['xmlns'] and type(node_dict['xmlns'][re_result.group(1)]) == int): node_ns_name = "{0}:{1}".format(node_dict['xmlns'][re_result.group(1)], re_result.group(2))
+			if (
+				re_result.group(1) in node_dict['xmlns'] and
+				type(node_dict['xmlns'][re_result.group(1)]) == int
+			): node_ns_name = "{0}:{1}".format(node_dict['xmlns'][re_result.group(1)], re_result.group(2))
 		#
 		elif ("@" in node_dict['xmlns']): node_ns_name = "{0}:{1}".format(node_dict['xmlns']['@'], node_name)
 
 		if (len(node_path_done) > 0):
 		#
-			self.data_ns_predefined_compact["{0} {1}".format(node_path_done, node_name)] = "{0} {1}".format(self.data_ns_predefined_compact[node_path_done], (node_name if (node_ns_name == "") else node_ns_name))
+			self.data_ns_predefined_compact["{0} {1}".format(node_path_done, node_name)] = "{0} {1}".format(
+				self.data_ns_predefined_compact[node_path_done],
+				(node_name if (node_ns_name == "") else node_ns_name)
+			)
+
 			self.data_ns_predefined_default[self.data_ns_predefined_compact["{0} {1}".format(node_path_done, node_name)]] = "{0} {1}".format(node_path_done, node_name)
 		#
 		elif (node_ns_name == ""):
@@ -622,7 +638,12 @@ Caches XML namespace data for the given XML node.
 :since: v0.1.00
 		"""
 
-		node_ptr[node_name]['level'] = ((1 + node_ptr['xml.item']['level']) if ("xml.item" in node_ptr and "level" in node_ptr['xml.item']) else 1)
+		node_ptr[node_name]['level'] = (
+			(1 + node_ptr['xml.item']['level'])
+			if ("xml.item" in node_ptr and "level" in node_ptr['xml.item']) else
+			1
+		)
+
 		node_ptr[node_name] = self.node_type([ ( "xml.item", node_ptr[node_name] ) ])
 		node_ptr = node_ptr[node_name]
 
@@ -751,7 +772,16 @@ path.
 				re_result = XmlParser.RE_NODE_NAME_XMLNS.match(node_name)
 
 				if (re_result == None): node_path += node_name
-				else: node_path += "{0}:{1}".format((self.data_ns_default[self.data_ns[re_result.group(1)]] if (re_result.group(1) in self.data_ns and self.data_ns[re_result.group(1)] in self.data_ns_default) else re_result.group(1)), re_result.group(2))
+				else:
+				#
+					node_path += "{0}:{1}".format(
+						(
+							self.data_ns_default[self.data_ns[re_result.group(1)]]
+							if (re_result.group(1) in self.data_ns and self.data_ns[re_result.group(1)] in self.data_ns_default) else
+							re_result.group(1)
+						),
+						re_result.group(2)
+					)
 			#
 			else: node_path += node_name
 		#
@@ -862,7 +892,14 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 				parser_ptr.LoadXml(data)
 				parser_ptr = XmlNodeReader(parser_ptr)
 
-				if (parser_ptr != None): _return = (self.data_parser.xml2dict_MonoXML(parser_ptr, strict_standard) if (treemode) else self.data_parser.xml2dict_MonoXML_merged(parser_ptr))
+				if (parser_ptr != None):
+				#
+					_return = (
+						self.data_parser.xml2dict_MonoXML(parser_ptr, strict_standard)
+						if (treemode) else
+						self.data_parser.xml2dict_MonoXML_merged(parser_ptr)
+					)
+				#
 			#
 			elif (re.search("<\\?xml(.+?)encoding=", data) == None):
 			#
