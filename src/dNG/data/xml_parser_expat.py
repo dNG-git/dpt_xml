@@ -2,12 +2,12 @@
 ##j## BOF
 
 """
+XML.py
+Multiple XML parsers: Common abstraction layer
+
 Expat implementation for XML.py
 """
 """n// NOTE
-----------------------------------------------------------------------------
-XML.py
-Multiple XML parsers: Common abstraction layer
 ----------------------------------------------------------------------------
 (C) direct Netware Group - All rights reserved
 http://www.direct-netware.de/redirect.py?py;xml

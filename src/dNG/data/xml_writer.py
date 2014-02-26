@@ -2,14 +2,12 @@
 ##j## BOF
 
 """
-XML (Extensible Markup Language) is the easiest way to use a descriptive
-language for controlling applications locally and world wide. This extended
-class provides object-oriented definition capabilities.
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 XML.py
 Multiple XML parsers: Common abstraction layer
+
+The writer class provides methods to manipulate XML nodes.
+"""
+"""n// NOTE
 ----------------------------------------------------------------------------
 (C) direct Netware Group - All rights reserved
 http://www.direct-netware.de/redirect.py?py;xml
