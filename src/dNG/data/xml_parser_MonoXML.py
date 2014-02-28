@@ -82,7 +82,7 @@ Retries before timing out
 		"""
 	#
 
-	def xml2dict_MonoXML(self, XmlNodeReader, strict_standard = True):
+	def xml_to_dict_MonoXML(self, XmlNodeReader, strict_standard = True):
 	#
 		"""
 Uses the given XmlNodeReader to parse data for the defined parser instance.
@@ -94,7 +94,7 @@ Uses the given XmlNodeReader to parse data for the defined parser instance.
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_MonoXML(XmlNodeReader, strict_standard)- (#echo(__LINE__)#)")
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml_to_dict_MonoXML(XmlNodeReader, strict_standard)- (#echo(__LINE__)#)")
 		_return = { }
 
 		if (hasattr(XmlNodeReader, "Read")):
@@ -106,22 +106,22 @@ Uses the given XmlNodeReader to parse data for the defined parser instance.
 
 			while (is_available and XmlNodeReader.NodeType != XmlNodeType.Element and time() < timeout_time): is_available = XmlNodeReader.Read()
 
-			monoxml_dict = self.xml2dict_MonoXML_walker(XmlNodeReader, strict_standard)
+			monoxml_dict = self.xml_to_dict_MonoXML_walker(XmlNodeReader, strict_standard)
 			XmlNodeReader.Close()
 
-			if (type(monoxml_dict) == dict): is_available = self.xml2dict_MonoXML_dict_walker(monoxml_dict, strict_standard)
+			if (type(monoxml_dict) == dict): is_available = self.xml_to_dict_MonoXML_dict_walker(monoxml_dict, strict_standard)
 			if (is_available): _return = self.parser.get()
 		#
 
 		return _return
 	#
 
-	def xml2dict_MonoXML_dict_walker(self, data_dict, strict_standard = True):
+	def xml_to_dict_MonoXML_dict_walker(self, data_dict, strict_standard = True):
 	#
 		"""
 Imports a pre-parsed XML dict into the given parser instance.
 
-:param data_dict: Result dict of a "xml2dict_MonoXML_walker()"
+:param data_dict: Result dict of a "xml_to_dict_MonoXML_walker()"
 :param strict_standard: True to be standard compliant
 
 :access: protected
@@ -129,7 +129,7 @@ Imports a pre-parsed XML dict into the given parser instance.
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_MonoXML_dict_walker(data_dict, strict_standard)- (#echo(__LINE__)#)")
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml_to_dict_MonoXML_dict_walker(data_dict, strict_standard)- (#echo(__LINE__)#)")
 		_return = False
 
 		if (type(data_dict) == dict):
@@ -147,7 +147,7 @@ Imports a pre-parsed XML dict into the given parser instance.
 
 			if (len(data_dict['children']) > 0):
 			#
-				for child_dict in data_dict['children']: self.xml2dict_MonoXML_dict_walker(child_dict, strict_standard)
+				for child_dict in data_dict['children']: self.xml_to_dict_MonoXML_dict_walker(child_dict, strict_standard)
 			#
 
 			_return = True
@@ -156,7 +156,7 @@ Imports a pre-parsed XML dict into the given parser instance.
 		return _return
 	#
 
-	def xml2dict_MonoXML_merged(self, XmlNodeReader):
+	def xml_to_dict_MonoXML_merged(self, XmlNodeReader):
 	#
 		"""
 Uses the given XmlNodeReader to parse data as a merged tree.
@@ -169,7 +169,7 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_MonoXML_merged(XmlNodeReader)- (#echo(__LINE__)#)")
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml_to_dict_MonoXML_merged(XmlNodeReader)- (#echo(__LINE__)#)")
 
 		if (hasattr(XmlNodeReader, "Read")):
 		#
@@ -295,7 +295,7 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 		return _return
 	#
 
-	def xml2dict_MonoXML_walker(self, XmlNodeReader, strict_standard = True, node_path = "", xml_level = 0):
+	def xml_to_dict_MonoXML_walker(self, XmlNodeReader, strict_standard = True, node_path = "", xml_level = 0):
 	#
 		"""
 Converts XML data into a multi-dimensional dict using this recursive
@@ -315,7 +315,7 @@ algorithm.
 
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_MonoXML_walker(XmlNodeReader, strict_standard, {0}, {1:d})- (#echo(__LINE__)#)".format(node_path, xml_level))
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml_to_dict_MonoXML_walker(XmlNodeReader, strict_standard, {0}, {1:d})- (#echo(__LINE__)#)".format(node_path, xml_level))
 		_return = None
 
 		if (hasattr (XmlNodeReader,"Read")):
@@ -380,7 +380,7 @@ algorithm.
 					elif (XmlNodeReader.NodeType == XmlNodeType.Element):
 					#
 						is_read = False
-						nodes_list.append(self.xml2dict_MonoXML_walker(XmlNodeReader, strict_standard, node_path, XmlNodeReader.Depth))
+						nodes_list.append(self.xml_to_dict_MonoXML_walker(XmlNodeReader, strict_standard, node_path, XmlNodeReader.Depth))
 					#
 					elif (XmlNodeReader.NodeType == XmlNodeType.EndElement):
 					#

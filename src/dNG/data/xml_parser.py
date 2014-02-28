@@ -224,7 +224,7 @@ completed.
 		return self.data_parse_only
 	#
 
-	def dict2xml(self, xml_tree, strict_standard = True):
+	def dict_to_xml(self, xml_tree, strict_standard = True):
 	#
 		"""
 Builds recursively a valid XML ouput reflecting the given XML dict tree.
@@ -236,7 +236,7 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.dict2xml(xml_tree, strict_standard)- (#echo(__LINE__)#)")
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.dict_to_xml(xml_tree, strict_standard)- (#echo(__LINE__)#)")
 		_return = ""
 
 		if (isinstance(xml_tree, dict) and len(xml_tree) > 0):
@@ -248,11 +248,11 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 				if ("xml.mtree" in xml_node_dict):
 				#
 					del(xml_node_dict['xml.mtree'])
-					_return += self.dict2xml(xml_node_dict, strict_standard)
+					_return += self.dict_to_xml(xml_node_dict, strict_standard)
 				#
 				elif ("xml.item" in xml_node_dict):
 				#
-					_return += self.dict2xml_item_encoder (xml_node_dict['xml.item'], False, strict_standard)
+					_return += self.dict_to_xml_item_encoder (xml_node_dict['xml.item'], False, strict_standard)
 
 					xml_node_tag = (
 						xml_node_dict['xml.item']['tag']
@@ -261,16 +261,16 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 					)
 
 					del(xml_node_dict['xml.item'])
-					_return += "{0}</{1}>".format(self.dict2xml(xml_node_dict, strict_standard), xml_node_tag)
+					_return += "{0}</{1}>".format(self.dict_to_xml(xml_node_dict, strict_standard), xml_node_tag)
 				#
-				elif (len(xml_node_dict['tag']) > 0): _return += self.dict2xml_item_encoder(xml_node_dict, True, strict_standard)
+				elif (len(xml_node_dict['tag']) > 0): _return += self.dict_to_xml_item_encoder(xml_node_dict, True, strict_standard)
 			#
 		#
 
 		return _return.strip()
 	#
 
-	def dict2xml_item_encoder(self, data, close_tag = True, strict_standard = True):
+	def dict_to_xml_item_encoder(self, data, close_tag = True, strict_standard = True):
 	#
 		"""
 Builds recursively a valid XML ouput reflecting the given XML dict tree.
@@ -859,7 +859,7 @@ Sets the EventHandler.
 		self.event_handler = event_handler
 	#
 
-	def xml2dict(self, data, treemode = True, strict_standard = True):
+	def xml_to_dict(self, data, treemode = True, strict_standard = True):
 	#
 		"""
 Converts XML data into a multi-dimensional XML tree or merged one.
@@ -875,7 +875,7 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 		# global: _mode, _PY_STR, _PY_UNICODE_TYPE
 		# pylint: disable=broad-except
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict(data, treemode, strict_standard)- (#echo(__LINE__)#)")
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml_to_dict(data, treemode, strict_standard)- (#echo(__LINE__)#)")
 		_return = None
 
 		try:
@@ -891,9 +891,9 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 				if (parser_ptr != None):
 				#
 					_return = (
-						self.data_parser.xml2dict_MonoXML(parser_ptr, strict_standard)
+						self.data_parser.xml_to_dict_MonoXML(parser_ptr, strict_standard)
 						if (treemode) else
-						self.data_parser.xml2dict_MonoXML_merged(parser_ptr)
+						self.data_parser.xml_to_dict_MonoXML_merged(parser_ptr)
 					)
 				#
 			#
@@ -918,7 +918,7 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 				parser_ptr.EndElementHandler = self.data_parser.expat_element_end
 				parser_ptr.Parse(data, True)
 
-				_return = self.data_parser.xml2dict_expat()
+				_return = self.data_parser.xml_to_dict_expat()
 			#
 			else:
 			#
@@ -929,7 +929,7 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 				parser_ptr.EndElementHandler = self.data_parser.expat_merged_element_end
 				parser_ptr.Parse(data, True)
 
-				_return = self.data_parser.xml2dict_expat_merged ()
+				_return = self.data_parser.xml_to_dict_expat_merged ()
 			#
 		#
 

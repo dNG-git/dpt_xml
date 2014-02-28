@@ -85,7 +85,7 @@ Convert the cached XML tree into a XML string.
 		if (self.data == None or len(self.data) < 1): _return = ""
 		else:
 		#
-			_return = self.dict2xml(self.data, strict_standard)
+			_return = self.dict_to_xml(self.data, strict_standard)
 			if (flush): self.data = { }
 		#
 

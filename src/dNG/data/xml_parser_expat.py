@@ -437,7 +437,7 @@ Method to handle "start element" callbacks.
 		self.parser_cache_counter += 1
 	#
 
-	def xml2dict_expat(self):
+	def xml_to_dict_expat(self):
 	#
 		"""
 Adds the result of an expat parsing operation to the defined XML instance if
@@ -447,7 +447,7 @@ the parser completed its work.
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2dict_expat()- (#echo(__LINE__)#)")
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml_to_dict_expat()- (#echo(__LINE__)#)")
 		_return = None
 
 		if ((not self.parser_active) and type(self.parser_cache) == dict and len(self.parser_cache) > 0):
@@ -467,7 +467,7 @@ the parser completed its work.
 		return _return
 	#
 
-	def xml2dict_expat_merged(self):
+	def xml_to_dict_expat_merged(self):
 	#
 		"""
 Returns the merged result of an expat parsing operation if the parser
