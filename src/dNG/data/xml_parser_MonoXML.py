@@ -104,7 +104,11 @@ Uses the given XmlNodeReader to parse data for the defined parser instance.
 
 			self.parser.set({ })
 
-			while (is_available and XmlNodeReader.NodeType != XmlNodeType.Element and time() < timeout_time): is_available = XmlNodeReader.Read()
+			while (
+				is_available and
+				XmlNodeReader.NodeType != XmlNodeType.Element and
+				time() < timeout_time
+			): is_available = XmlNodeReader.Read()
 
 			monoxml_dict = self.xml_to_dict_MonoXML_walker(XmlNodeReader, strict_standard)
 			XmlNodeReader.Close()

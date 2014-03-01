@@ -123,7 +123,7 @@ Path of the cached node pointer
 		"""
 Reference of the cached node pointer (string if unset)
 		"""
-		self.data_charset = xml_charset.upper ()
+		self.data_charset = xml_charset.upper()
 		"""
 Charset used
 		"""
