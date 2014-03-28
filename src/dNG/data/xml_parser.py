@@ -897,41 +897,42 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 					)
 				#
 			#
-			elif (re.search("<\\?xml(.+?)encoding=", data) == None):
+
+			if (_mode == "py"):
 			#
-				parser_ptr = expat.ParserCreate("UTF-8")
-				if (str != _PY_UNICODE_TYPE and type(data) == _PY_UNICODE_TYPE): data = _PY_STR(data, "utf-8")
+				if (re.search("<\\?xml(.+?)encoding=", data) == None):
+				#
+					parser_ptr = expat.ParserCreate("UTF-8")
+					if (str != _PY_UNICODE_TYPE and type(data) == _PY_UNICODE_TYPE): data = _PY_STR(data, "utf-8")
+				#
+				else: parser_ptr = expat.ParserCreate()
+
+				if (treemode):
+				#
+					self.data_parser.define_mode(XmlParserExpat.MODE_TREE)
+					self.data_parser.define_strict_standard(strict_standard)
+
+					parser_ptr.CharacterDataHandler = self.data_parser.expat_cdata
+					parser_ptr.StartElementHandler = self.data_parser.expat_element_start
+					parser_ptr.EndElementHandler = self.data_parser.expat_element_end
+					parser_ptr.Parse(data, True)
+
+					_return = self.data_parser.xml_to_dict_expat()
+				#
+				else:
+				#
+					self.data_parser.define_mode(XmlParserExpat.MODE_MERGED)
+
+					parser_ptr.CharacterDataHandler = self.data_parser.expat_merged_cdata
+					parser_ptr.StartElementHandler = self.data_parser.expat_merged_element_start
+					parser_ptr.EndElementHandler = self.data_parser.expat_merged_element_end
+					parser_ptr.Parse(data, True)
+
+					_return = self.data_parser.xml_to_dict_expat_merged ()
+				#
 			#
-			else: parser_ptr = expat.ParserCreate()
 		#
-		except Exception: parser_ptr = None
-
-		if (_mode == "py" and parser_ptr != None):
-		#
-			if (treemode):
-			#
-				self.data_parser.define_mode(XmlParserExpat.MODE_TREE)
-				self.data_parser.define_strict_standard(strict_standard)
-
-				parser_ptr.CharacterDataHandler = self.data_parser.expat_cdata
-				parser_ptr.StartElementHandler = self.data_parser.expat_element_start
-				parser_ptr.EndElementHandler = self.data_parser.expat_element_end
-				parser_ptr.Parse(data, True)
-
-				_return = self.data_parser.xml_to_dict_expat()
-			#
-			else:
-			#
-				self.data_parser.define_mode(XmlParserExpat.MODE_MERGED)
-
-				parser_ptr.CharacterDataHandler = self.data_parser.expat_merged_cdata
-				parser_ptr.StartElementHandler = self.data_parser.expat_merged_element_start
-				parser_ptr.EndElementHandler = self.data_parser.expat_merged_element_end
-				parser_ptr.Parse(data, True)
-
-				_return = self.data_parser.xml_to_dict_expat_merged ()
-			#
-		#
+		except Exception: pass
 
 		if (treemode and self.data_parse_only):
 		#
