@@ -322,7 +322,7 @@ algorithm.
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml_to_dict_MonoXML_walker(XmlNodeReader, strict_standard, {0}, {1:d})- (#echo(__LINE__)#)".format(node_path, xml_level))
 		_return = None
 
-		if (hasattr (XmlNodeReader,"Read")):
+		if (hasattr(XmlNodeReader,"Read")):
 		#
 			attributes_dict = { }
 			is_node = False

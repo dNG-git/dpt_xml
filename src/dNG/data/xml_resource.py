@@ -275,7 +275,11 @@ Get the parent node of the target.
 			if (isinstance(node_ptr, dict)):
 			#
 				node_name = self.ns_translate_name(node_ptr, node_name)
-				if (node_name in node_ptr): _return = ((len(node_ptr[node_name]) - 1) if ("xml.mtree" in node_ptr[node_name]) else 1)
+
+				if (node_name in node_ptr):
+				#
+					_return = ((len(node_ptr[node_name]) - 1) if ("xml.mtree" in node_ptr[node_name]) else 1)
+				#
 			#
 		#
 
@@ -478,7 +482,7 @@ Get the parent node of the target.
 			node_path = self._ns_translate_path(node_path)
 			node_path_list = node_path.split(" ")
 
-			if (len (node_path_list) > 1):
+			if (len(node_path_list) > 1):
 			#
 				node_name = node_path_list.pop()
 				node_path = " ".join(node_path_list)
@@ -526,7 +530,7 @@ Get the parent node of the target.
 						#
 						elif (node_ptr[node_name]['xml.mtree'] in node_ptr[node_name]):
 						#
-							del (node_ptr[node_name][node_ptr[node_name]['xml.mtree']])
+							del(node_ptr[node_name][node_ptr[node_name]['xml.mtree']])
 							_return = True
 						#
 

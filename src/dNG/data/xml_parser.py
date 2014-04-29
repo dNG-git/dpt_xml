@@ -252,7 +252,7 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 				#
 				elif ("xml.item" in xml_node_dict):
 				#
-					_return += self.dict_to_xml_item_encoder (xml_node_dict['xml.item'], False, strict_standard)
+					_return += self.dict_to_xml_item_encoder(xml_node_dict['xml.item'], False, strict_standard)
 
 					xml_node_tag = (
 						xml_node_dict['xml.item']['tag']
@@ -928,7 +928,7 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 					parser_ptr.EndElementHandler = self.data_parser.expat_merged_element_end
 					parser_ptr.Parse(data, True)
 
-					_return = self.data_parser.xml_to_dict_expat_merged ()
+					_return = self.data_parser.xml_to_dict_expat_merged()
 				#
 			#
 		#
