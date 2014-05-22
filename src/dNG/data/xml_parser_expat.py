@@ -25,18 +25,12 @@ NOTE_END //n"""
 
 # pylint: disable=invalid-name,undefined-variable
 
-try:
-#
-	_PY_STR = unicode.encode
-	_PY_UNICODE_TYPE = unicode
-#
-except NameError:
-#
-	_PY_STR = bytes.decode
-	_PY_UNICODE_TYPE = str
-#
+from xml.parsers import expat
+import re
 
-class XmlParserExpat(object):
+from .abstract_xml_parser import AbstractXmlParser, _PY_STR, _PY_UNICODE_TYPE
+
+class XmlParserExpat(AbstractXmlParser):
 #
 	"""
 This implementation supports expat for XML parsing.
@@ -47,15 +41,6 @@ This implementation supports expat for XML parsing.
 :since:     v0.1.00
 :license:   http://www.direct-netware.de/redirect.py?licenses;mpl2
             Mozilla Public License, v. 2.0
-	"""
-
-	MODE_MERGED = 1
-	"""
-Non standard compliant merged parser mode
-	"""
-	MODE_TREE = 2
-	"""
-Tree parsing mode
 	"""
 
 	def __init__(self, parser, event_handler = None):
@@ -69,17 +54,8 @@ Constructor __init__(XmlParserExpat)
 :since: v0.1.00
 		"""
 
-		if (event_handler != None): event_handler.debug("#echo(__FILEPATH__)# -xml.__init__()- (#echo(__LINE__)#)")
+		AbstractXmlParser.__init__(self, parser, event_handler)
 
-		self.data_merged_mode = False
-		"""
-True if the parser is set to merged
-		"""
-		self.event_handler = event_handler
-		"""
-The EventHandler is called whenever debug messages should be logged or errors
-happened.
-		"""
 		self.node_path = ""
 		"""
 Current node path of the parser
@@ -91,10 +67,6 @@ Current path as an array of node tags
 		self.node_path_depth = 0
 		"""
 Current depth
-		"""
-		self.parser = parser
-		"""
-Container for the XML document
 		"""
 		self.parser_active = False
 		"""
@@ -112,55 +84,31 @@ Cache entry counter
 		"""
 Links to the latest entry added
 		"""
-		self.parser_strict_standard = True
-		"""
-True to be standard conform
-		"""
 	#
 
-	def define_mode(self, mode = 1):
+	def _get_merged_result(self):
 	#
 		"""
-Define the parser mode MODE_MERGED or MODE_TREE.
+Returns the merged result of an expat parsing operation if the parser
+completed its work.
 
-:param mode: Mode to select
-
-:return: (bool) True if parser is set to merged mode
+:return: (dict) Merged XML tree; None on error
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.define_mode({0:d})- (#echo(__LINE__)#)".format(mode))
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result()- (#echo(__LINE__)#)".format(self))
+		_return = None
 
-		if ((not self.parser_active) and type(mode) == int): self.data_merged_mode = (mode == XmlParserExpat.MODE_MERGED)
-		return self.data_merged_mode
+		if ((not self.parser_active) and type(self.parser_cache) == dict and len(self.parser_cache) > 0):
+		#
+			_return = self.parser_cache
+			self.parser_cache = { }
+		#
+
+		return _return
 	#
 
-	def define_strict_standard(self, strict_standard):
-	#
-		"""
-Changes the parser mode regarding being strict standard compliant.
-
-:param strict_standard: True to be standard compliant
-
-:return: (bool) Accepted state
-:since:  v0.1.00
-		"""
-
-		# global: _PY_STR, _PY_UNICODE_TYPE
-
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.define_strict_standard(strict_standard)- (#echo(__LINE__)#)")
-
-		if (str != _PY_UNICODE_TYPE and type(strict_standard) == _PY_UNICODE_TYPE): strict_standard = _PY_STR(strict_standard, "utf-8")
-		_type = type(strict_standard)
-
-		if ((_type == bool or _type == str) and strict_standard): self.parser_strict_standard = True
-		elif (strict_standard == None and (not self.parser_strict_standard)): self.parser_strict_standard = True
-		else: self.parser_strict_standard = False
-
-		return self.parser_strict_standard
-	#
-
-	def expat_cdata(self, data):
+	def handle_cdata(self, data):
 	#
 		"""
 python.org: Called for character data. This will be called for normal
@@ -174,7 +122,7 @@ required information.
 :since: v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.expat_cdata(data)- (#echo(__LINE__)#)")
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata(data)- (#echo(__LINE__)#)".format(self))
 
 		if (self.parser_active):
 		#
@@ -183,7 +131,7 @@ required information.
 		#
 	#
 
-	def expat_element_end(self, name):
+	def handle_element_end(self, name):
 	#
 		"""
 Method to handle "end element" callbacks.
@@ -197,7 +145,7 @@ Method to handle "end element" callbacks.
 
 		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.expat_element_end({0})- (#echo(__LINE__)#)".format(name))
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end({1})- (#echo(__LINE__)#)".format(self, name))
 
 		if (self.parser_active):
 		#
@@ -209,16 +157,14 @@ Method to handle "end element" callbacks.
 			self.node_path = " ".join(self.node_path_list)
 
 			if ("value" not in self.parser_cache[node_path]): self.parser_cache[node_path]['value'] = ""
-			elif (
-				"xml:space" not in self.parser_cache[node_path]['attributes'] or
-				self.parser_cache[node_path]['attributes']['xml:space'] != "preserve"
-			): self.parser_cache[node_path]['value'] = self.parser_cache[node_path]['value'].strip()
+			elif ("xml:space" not in self.parser_cache[node_path]['attributes']
+			      or self.parser_cache[node_path]['attributes']['xml:space'] != "preserve"
+			     ): self.parser_cache[node_path]['value'] = self.parser_cache[node_path]['value'].strip()
 
-			if (
-				(not self.parser_strict_standard) and
-				"value" in self.parser_cache[node_path]['attributes'] and
-				len(self.parser_cache[node_path]['value']) < 1
-			):
+			if ((not self.strict_standard_mode)
+			    and "value" in self.parser_cache[node_path]['attributes']
+			    and len(self.parser_cache[node_path]['value']) < 1
+			   ):
 			#
 				self.parser_cache[node_path]['value'] = self.parser_cache[node_path]['attributes']['value']
 				del(self.parser_cache[node_path]['attributes']['value'])
@@ -232,7 +178,7 @@ Method to handle "end element" callbacks.
 		#
 	#
 
-	def expat_merged_cdata(self, data):
+	def handle_cdata_merged(self, data):
 	#
 		"""
 python.org: Called for character data. This will be called for normal
@@ -246,7 +192,7 @@ required information. (Merged XML parser)
 :since: v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.expat_merged_cdata(data)- (#echo(__LINE__)#)")
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata_merged(data)- (#echo(__LINE__)#)".format(self))
 
 		if (self.parser_active):
 		#
@@ -255,7 +201,7 @@ required information. (Merged XML parser)
 		#
 	#
 
-	def expat_merged_element_end(self, name):
+	def handle_element_end_merged(self, name):
 	#
 		"""
 Method to handle "end element" callbacks. (Merged XML parser)
@@ -269,15 +215,14 @@ Method to handle "end element" callbacks. (Merged XML parser)
 
 		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.expat_merged_element_end({0})- (#echo(__LINE__)#)".format(name))
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end_merged({1})- (#echo(__LINE__)#)".format(self, name))
 
 		if (self.parser_active):
 		#
-			node_ptr = (
-				self.parser_cache[self.node_path][self.parser_cache_link[self.node_path]]
-				if (self.parser_cache_link[self.node_path] > 0) else
-				self.parser_cache[self.node_path]
-			)
+			node_ptr = (self.parser_cache[self.node_path][self.parser_cache_link[self.node_path]]
+			            if (self.parser_cache_link[self.node_path] > 0) else
+			            self.parser_cache[self.node_path]
+			           )
 
 			self.node_path_list.pop()
 			self.node_path_depth -= 1
@@ -300,7 +245,7 @@ Method to handle "end element" callbacks. (Merged XML parser)
 		#
 	#
 
-	def expat_merged_element_start(self, name, attributes):
+	def handle_element_start_merged(self, name, attributes):
 	#
 		"""
 Method to handle "start element" callbacks. (Merged XML parser)
@@ -315,7 +260,7 @@ Method to handle "start element" callbacks. (Merged XML parser)
 
 		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.expat_merged_element_start({0}, attributes)- (#echo(__LINE__)#)".format(name))
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start_merged({1}, attributes)- (#echo(__LINE__)#)".format(self, name))
 
 		if (not self.parser_active):
 		#
@@ -372,7 +317,7 @@ Method to handle "start element" callbacks. (Merged XML parser)
 		#
 	#
 
-	def expat_element_start(self, name, attributes):
+	def handle_element_start(self, name, attributes):
 	#
 		"""
 Method to handle "start element" callbacks.
@@ -387,7 +332,7 @@ Method to handle "start element" callbacks.
 
 		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.expat_element_start({0}, attributes)- (#echo(__LINE__)#)".format(name))
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start({1}, attributes)- (#echo(__LINE__)#)".format(self, name))
 
 		if (not self.parser_active):
 		#
@@ -398,7 +343,7 @@ Method to handle "start element" callbacks.
 			self.parser_cache_link = { }
 		#
 
-		if (not self.parser_strict_standard):
+		if (not self.strict_standard_mode):
 		#
 			name = name.lower()
 			if (name[:12] == "digitstart__"): name = name[12:]
@@ -425,7 +370,7 @@ Method to handle "start element" callbacks.
 				attributes[key_lowercase] = value.lower()
 				if (key != key_lowercase): del(attributes[key])
 			#
-			elif ((not self.parser_strict_standard) and key != key_lowercase):
+			elif ((not self.strict_standard_mode) and key != key_lowercase):
 			#
 				del(attributes[key])
 				attributes[key_lowercase] = value
@@ -437,7 +382,51 @@ Method to handle "start element" callbacks.
 		self.parser_cache_counter += 1
 	#
 
-	def xml_to_dict_expat(self):
+	def parse(self, data):
+	#
+		"""
+Parses a given XML string and return the result in the format set by
+"set_mode()" and "set_strict_standard()".
+
+:return: (dict) Multi-dimensional or merged XML tree; None on error
+:since:  v0.1.01
+		"""
+
+		# global: _PY_STR, _PY_UNICODE_TYPE
+
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse(data)- (#echo(__LINE__)#)".format(self))
+
+		if (re.search("<\\?xml(.+?)encoding=", data) == None):
+		#
+			parser_ptr = expat.ParserCreate("UTF-8")
+			if (str != _PY_UNICODE_TYPE and type(data) == _PY_UNICODE_TYPE): data = _PY_STR(data, "utf-8")
+		#
+		else: parser_ptr = expat.ParserCreate()
+
+		if (self.merged_mode):
+		#
+			parser_ptr.CharacterDataHandler = self.handle_cdata_merged
+			parser_ptr.StartElementHandler = self.handle_element_start_merged
+			parser_ptr.EndElementHandler = self.handle_element_end_merged
+			parser_ptr.Parse(data, True)
+
+			_return = self._get_merged_result()
+		#
+		else:
+		#
+			parser_ptr.CharacterDataHandler = self.handle_cdata
+			parser_ptr.StartElementHandler = self.handle_element_start
+			parser_ptr.EndElementHandler = self.handle_element_end
+			parser_ptr.Parse(data, True)
+
+			self._update_parser_with_result()
+			_return = self.parser.get()
+		#
+
+		return _return
+	#
+
+	def _update_parser_with_result(self):
 	#
 		"""
 Adds the result of an expat parsing operation to the defined XML instance if
@@ -447,7 +436,7 @@ the parser completed its work.
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml_to_dict_expat()- (#echo(__LINE__)#)")
+		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)".format(self))
 		_return = None
 
 		if ((not self.parser_active) and type(self.parser_cache) == dict and len(self.parser_cache) > 0):
@@ -457,32 +446,9 @@ the parser completed its work.
 			for node_key in self.parser_cache:
 			#
 				node_dict = self.parser_cache[node_key]
-				self.parser.node_add(node_dict['node_path'], node_dict['value'], node_dict['attributes'])
+				self.parser.add_node(node_dict['node_path'], node_dict['value'], node_dict['attributes'])
 			#
 
-			self.parser_cache = { }
-			_return = self.parser.get()
-		#
-
-		return _return
-	#
-
-	def xml_to_dict_expat_merged(self):
-	#
-		"""
-Returns the merged result of an expat parsing operation if the parser
-completed its work.
-
-:return: (dict) Merged XML tree; None on error
-:since:  v0.1.00
-		"""
-
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml2array_expat_merged()- (#echo(__LINE__)#)")
-		_return = None
-
-		if ((not self.parser_active) and type(self.parser_cache) == dict and len(self.parser_cache) > 0):
-		#
-			_return = self.parser_cache
 			self.parser_cache = { }
 		#
 
