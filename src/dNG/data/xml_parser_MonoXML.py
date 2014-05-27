@@ -102,10 +102,8 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 					if (node_path in nodes_dict):
 					#
 						nodes_dict[node_path]['value'] += (_XmlNodeReader.Value
-						                                   if ("xml:space" in nodes_dict[node_path]['attributes']
-						                                       and nodes_dict[node_path]['attributes']['xml:space'] == "preserve"
-						                                      )
-						                                   else _XmlNodeReader.Value.strip()
+						                                   if (nodes_dict[node_path]['attributes'].get("xml:space") == "preserve") else
+						                                   _XmlNodeReader.Value.strip()
 						                                  )
 					#
 				#
@@ -148,10 +146,8 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 				elif (_XmlNodeReader.NodeType == XmlNodeType.Text and node_path in nodes_dict):
 				#
 					nodes_dict[node_path]['value'] += (_XmlNodeReader.Value
-					                                   if ("xml:space" in nodes_dict[node_path]['attributes']
-					                                       and nodes_dict[node_path]['attributes']['xml:space'] == "preserve"
-					                                      )
-					                                   else _XmlNodeReader.Value.strip()
+					                                   if (nodes_dict[node_path]['attributes'].get("xml:space") == "preserve") else
+					                                   _XmlNodeReader.Value.strip()
 					                                  )
 				#
 

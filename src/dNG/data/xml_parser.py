@@ -426,7 +426,7 @@ Convert an XML leaf to a node.
 		"""
 
 		node_ptr[node_name]['level'] = ((1 + node_ptr['xml.item']['level'])
-		                                if ("xml.item" in node_ptr and "level" in node_ptr['xml.item']) else
+		                                if ("level" in node_ptr.get("xml.item", { })) else
 		                                1
 		                               )
 
@@ -651,7 +651,7 @@ tag will be saved as "tag_ns" and "tag_parsed".
 		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.translate_ns(node)- (#echo(__LINE__)#)")
 		_return = node
 
-		if (isinstance(node, dict) and "tag" in node and "xmlns" in node and isinstance(node['xmlns'], dict)):
+		if (isinstance(node, dict) and "tag" in node and isinstance(node.get("xmlns"), dict)):
 		#
 			_return['tag_ns'] = ""
 			_return['tag_parsed'] = node['tag']
