@@ -1,7 +1,7 @@
-xml_parser_MonoXML
+dNG.data.XmlParser
 ==================
 
-.. automodule:: XMLpy.xml_parser_MonoXML
+.. automodule:: dNG.data.xml_parser.XmlParser
     :members:
     :undoc-members:
     :show-inheritance:

@@ -4,8 +4,6 @@
 """
 XML.py
 Multiple XML parsers: Common abstraction layer
-"""
-"""n// NOTE
 ----------------------------------------------------------------------------
 (C) direct Netware Group - All rights reserved
 http://www.direct-netware.de/redirect.py?py;xml
@@ -18,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pyXmlVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 # pylint: disable=import-error,invalid-name,unused-import
 
@@ -503,8 +500,6 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 
 		_return = ""
 
-		is_value_attr_compatible = (False if (strict_standard_mode) else True)
-
 		if (isinstance(data, dict)):
 		#
 			if (len(data['tag']) > 0):
@@ -516,57 +511,30 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 				#
 					for key in data['attributes']:
 					#
-						if (is_value_attr_compatible and key == "value" and len(data['value']) < 1): data['value'] = data['attributes'][key]
+						type_value = type(data['attributes'][key])
+
+						if (type_value == int or type_value == float): value = str(data['attributes'][key])
+						elif (data['attributes'][key] == None): value = ""
 						else:
 						#
-							type_value = type(data['attributes'][key])
+							value = data['attributes'][key]
 
-							if (type_value == int or type_value == float): value = str(data['attributes'][key])
-							elif (data['attributes'][key] == None): value = ""
-							else:
-							#
-								value = data['attributes'][key]
-
-								if (str != _PY_UNICODE_TYPE and type_value == _PY_UNICODE_TYPE): value = _PY_STR(value, "utf-8")
-								value = value.replace("&", "&amp;")
-								value = value.replace("<", "&lt;")
-								value = value.replace(">", "&gt;")
-								value = value.replace('"', "&quot;")
-								if (self.data_charset != "UTF-8"): value = value.encode(self.data_charset)
-							#
-
-							_return += " {0}=\"{1}\"".format(key, value)
+							if (str != _PY_UNICODE_TYPE and type_value == _PY_UNICODE_TYPE): value = _PY_STR(value, "utf-8")
+							value = value.replace("&", "&amp;")
+							value = value.replace("<", "&lt;")
+							value = value.replace(">", "&gt;")
+							value = value.replace('"', "&quot;")
+							if (self.data_charset != "UTF-8"): value = value.encode(self.data_charset)
 						#
+
+						_return += " {0}=\"{1}\"".format(key, value)
 					#
 				#
 
-				if (is_value_attr_compatible and "value" in data):
-				#
-					type_value = type(data['value'])
-
-					if (type_value == int or type_value == float): data['value'] = str(data['value'])
-					else:
-					#
-						if (str != _PY_UNICODE_TYPE and type_value == _PY_UNICODE_TYPE): data['value'] = _PY_STR(data['value'], "utf-8")
-
-						if (is_value_attr_compatible):
-						#
-							if ("&" in data['value']): is_value_attr_compatible = False
-							elif ("<" in data['value']): is_value_attr_compatible = False
-							elif (">" in data['value']): is_value_attr_compatible = False
-							elif ('"' in data['value']): is_value_attr_compatible = False
-							elif (re.search("\\s", data['value'].replace(" ","_")) != None): is_value_attr_compatible = False
-						#
-					#
-
-					if (is_value_attr_compatible):
-					#
-						if (self.data_charset != "UTF-8"): data['value'] = data['value'].encode(self.data_charset)
-						_return += " value=\"{0}\"".format(data['value'])
-					#
-				#
-
-				if (is_value_attr_compatible and close_tag): _return += " />"
+				if (close_tag
+				    and (not strict_standard_mode)
+				    and ("value" not in data or len(data['value']) < 1)
+				   ): _return += " />"
 				else:
 				#
 					_return += ">"

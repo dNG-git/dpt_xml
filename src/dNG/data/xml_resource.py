@@ -4,10 +4,6 @@
 """
 XML.py
 Multiple XML parsers: Common abstraction layer
-
-The writer class provides methods to manipulate XML nodes.
-"""
-"""n// NOTE
 ----------------------------------------------------------------------------
 (C) direct Netware Group - All rights reserved
 http://www.direct-netware.de/redirect.py?py;xml
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pyXmlVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 # pylint: disable=invalid-name
 
