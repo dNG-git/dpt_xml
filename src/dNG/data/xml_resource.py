@@ -6,13 +6,13 @@ XML.py
 Multiple XML parsers: Common abstraction layer
 ----------------------------------------------------------------------------
 (C) direct Netware Group - All rights reserved
-http://www.direct-netware.de/redirect.py?py;xml
+https://www.direct-netware.de/redirect?py;xml
 
 This Source Code Form is subject to the terms of the Mozilla Public License,
 v. 2.0. If a copy of the MPL was not distributed with this file, You can
 obtain one at http://mozilla.org/MPL/2.0/.
 ----------------------------------------------------------------------------
-http://www.direct-netware.de/redirect.py?licenses;mpl2
+https://www.direct-netware.de/redirect?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pyXmlVersion)#
 #echo(__FILEPATH__)#
@@ -43,7 +43,7 @@ create valid documents.
 :copyright: direct Netware Group - All rights reserved
 :package:   XML.py
 :since:     v1.0.0
-:license:   http://www.direct-netware.de/redirect.py?licenses;mpl2
+:license:   https://www.direct-netware.de/redirect?licenses;mpl2
             Mozilla Public License, v. 2.0
 	"""
 
