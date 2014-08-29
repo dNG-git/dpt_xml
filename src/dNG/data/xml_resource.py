@@ -42,7 +42,7 @@ create valid documents.
 :author:    direct Netware Group
 :copyright: direct Netware Group - All rights reserved
 :package:   XML.py
-:since:     v1.0.0
+:since:     v0.1.00
 :license:   https://www.direct-netware.de/redirect?licenses;mpl2
             Mozilla Public License, v. 2.0
 	"""
