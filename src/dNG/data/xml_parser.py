@@ -283,7 +283,11 @@ Adds a XML node with content - recursively if required.
 
 					if ((not is_available) and add_recursively):
 					#
-						node_dict = self.node_type(tag = node_name, level = 1, xmlns = { })
+						node_dict = self.node_type(tag = node_name,
+						                           level = 1,
+						                           attributes = { },
+						                           xmlns = { }
+						                          )
 
 						if ("xml.item" in node_ptr):
 						#
@@ -300,7 +304,11 @@ Adds a XML node with content - recursively if required.
 				#
 				else:
 				#
-					node_dict = self.node_type(tag = node_name, value = value, xmlns = { })
+					node_dict = self.node_type(tag = node_name,
+					                           value = value,
+					                           attributes = { },
+					                           xmlns = { }
+					                          )
 
 					if ("xml.item" in node_ptr and "xmlns" in node_ptr['xml.item']): node_dict['xmlns'] = node_ptr['xml.item']['xmlns'].copy()
 
