@@ -295,14 +295,10 @@ algorithm.
 					      and (_XmlNodeReader.NodeType == XmlNodeType.Whitespace or _XmlNodeReader.NodeType == XmlNodeType.SignificantWhitespace)
 					     ): node_content += _XmlNodeReader.Value
 
-					if (is_read):
-					#
-						if (is_node): is_node = _XmlNodeReader.Read()
-						else: _XmlNodeReader.Read()
-					#
+					if (is_read): is_node = _XmlNodeReader.Read()
 					else: is_read = True
 				#
-				else: is_node = False
+				else: break
 			#
 
 			_return = { "node_path": node_path, "value": node_content, "attributes": attributes_dict, "children": nodes_list }
