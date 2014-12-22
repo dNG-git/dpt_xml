@@ -91,7 +91,7 @@ completed its work.
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result()- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result()- (#echo(__LINE__)#)".format(self))
 		_return = None
 
 		if ((not self.parser_active) and type(self.parser_cache) == dict and len(self.parser_cache) > 0):
@@ -117,7 +117,7 @@ required information.
 :since: v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata(data)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata(data)- (#echo(__LINE__)#)".format(self))
 
 		if (self.parser_active):
 		#
@@ -140,7 +140,7 @@ Method to handle "end element" callbacks.
 
 		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end({1})- (#echo(__LINE__)#)".format(self, name))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end({1})- (#echo(__LINE__)#)".format(self, name))
 
 		if (self.parser_active):
 		#
@@ -187,7 +187,7 @@ required information. (Merged XML parser)
 :since: v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata_merged(data)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata_merged(data)- (#echo(__LINE__)#)".format(self))
 
 		if (self.parser_active):
 		#
@@ -210,7 +210,7 @@ Method to handle "end element" callbacks. (Merged XML parser)
 
 		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end_merged({1})- (#echo(__LINE__)#)".format(self, name))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end_merged({1})- (#echo(__LINE__)#)".format(self, name))
 
 		if (self.parser_active):
 		#
@@ -255,7 +255,7 @@ Method to handle "start element" callbacks. (Merged XML parser)
 
 		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start_merged({1}, attributes)- (#echo(__LINE__)#)".format(self, name))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start_merged({1}, attributes)- (#echo(__LINE__)#)".format(self, name))
 
 		if (not self.parser_active):
 		#
@@ -327,7 +327,7 @@ Method to handle "start element" callbacks.
 
 		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start({1}, attributes)- (#echo(__LINE__)#)".format(self, name))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start({1}, attributes)- (#echo(__LINE__)#)".format(self, name))
 
 		if (not self.parser_active):
 		#
@@ -389,9 +389,9 @@ Parses a given XML string and return the result in the format set by
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse(data)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse(data)- (#echo(__LINE__)#)".format(self))
 
-		if (re.search("<\\?xml(.+?)encoding=", data) == None):
+		if (re.search("<\\?xml(.+?)encoding=", data) is None):
 		#
 			parser_ptr = expat.ParserCreate("UTF-8")
 			if (str != _PY_UNICODE_TYPE and type(data) == _PY_UNICODE_TYPE): data = _PY_STR(data, "utf-8")
@@ -431,7 +431,7 @@ the parser completed its work.
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)".format(self))
 		_return = None
 
 		if ((not self.parser_active) and type(self.parser_cache) == dict and len(self.parser_cache) > 0):

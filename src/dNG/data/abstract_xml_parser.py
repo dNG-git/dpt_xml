@@ -67,7 +67,7 @@ Constructor __init__(XmlParserExpat)
 :since: v0.1.00
 		"""
 
-		if (event_handler != None): event_handler.debug("#echo(__FILEPATH__)# -{0!r}.__init__()- (#echo(__LINE__)#)".format(self))
+		if (event_handler is not None): event_handler.debug("#echo(__FILEPATH__)# -{0!r}.__init__()- (#echo(__LINE__)#)".format(self))
 
 		self.merged_mode = False
 		"""
@@ -111,7 +111,7 @@ Define the parser mode MODE_MERGED or MODE_TREE.
 :since: v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_mode({1:d})- (#echo(__LINE__)#)".format(self, mode))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_mode({1:d})- (#echo(__LINE__)#)".format(self, mode))
 
 		self.merged_mode = (mode == AbstractXmlParser.MODE_MERGED)
 	#
@@ -128,13 +128,13 @@ Changes the parser mode regarding being strict standard compliant.
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_strict_standard(strict_standard_mode)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_strict_standard(strict_standard_mode)- (#echo(__LINE__)#)".format(self))
 
 		if (str != _PY_UNICODE_TYPE and type(strict_standard_mode) == _PY_UNICODE_TYPE): strict_standard_mode = _PY_STR(strict_standard_mode, "utf-8")
 		_type = type(strict_standard_mode)
 
 		if ((_type == bool or _type == str) and strict_standard_mode): self.strict_standard_mode = True
-		elif (strict_standard_mode == None and (not self.strict_standard_mode)): self.strict_standard_mode = True
+		elif (strict_standard_mode is None and (not self.strict_standard_mode)): self.strict_standard_mode = True
 		else: self.strict_standard_mode = False
 	#
 #

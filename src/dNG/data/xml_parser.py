@@ -63,7 +63,7 @@ try:
 #
 except ImportError: pass
 
-if (_mode == None):
+if (_mode is None):
 #
 	from .xml_parser_expat import XmlParserExpat
 	_mode = _IMPLEMENTATION_PYTHON
@@ -200,17 +200,17 @@ Adds a XML node with content - recursively if required.
 
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.add_node({0}, value, attributes, add_recursively)- (#echo(__LINE__)#)".format(node_path))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.add_node({0}, value, attributes, add_recursively)- (#echo(__LINE__)#)".format(node_path))
 		_return = False
 
-		if (self.data == None): self.data = self.node_type()
+		if (self.data is None): self.data = self.node_type()
 		type_value = type(value)
 
-		if (type(node_path) == str and type_value == str or type_value == _PY_UNICODE_TYPE):
+		if (type(node_path) == str and (not isinstance(type_value, dict)) and (not isinstance(type_value, list))):
 		#
 			node_path = self._translate_ns_path(node_path)
 
-			if (self.data_cache_node == "" or re.match("^{0}".format(re.escape(node_path)), self.data_cache_node,re.I) == None):
+			if (self.data_cache_node == "" or re.match("^{0}".format(re.escape(node_path)), self.data_cache_node,re.I) is None):
 			#
 				node_path_done = ""
 				node_ptr = self.data
@@ -231,7 +231,7 @@ Adds a XML node with content - recursively if required.
 				node_name = nodes_list.pop(0)
 				re_result = XmlParser.RE_NODE_POSITION.match(node_name)
 
-				if (re_result == None): node_position = -1
+				if (re_result is None): node_position = -1
 				else:
 				#
 					node_name = re_result.group(1)
@@ -335,7 +335,7 @@ Adds a XML node with content - recursively if required.
 							value = attributes[key]
 							type_value = type(value)
 
-							if ((type_value == str or type_value == _PY_UNICODE_TYPE) and XmlParser.RE_ATTRIBUTES_XMLNS.match(key) != None):
+							if ((type_value == str or type_value == _PY_UNICODE_TYPE) and XmlParser.RE_ATTRIBUTES_XMLNS.match(key) is not None):
 							#
 								ns_name = key[6:]
 
@@ -390,7 +390,7 @@ Caches XML namespace data for the given XML node.
 		node_ns_name = ""
 		re_result = XmlParser.RE_NODE_NAME_XMLNS.match(node_name)
 
-		if (re_result != None):
+		if (re_result is not None):
 		#
 			if (re_result.group(1) in node_dict['xmlns']
 			    and type(node_dict['xmlns'][re_result.group(1)]) == int
@@ -457,7 +457,7 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.dict_to_xml(xml_tree, strict_standard_mode)- (#echo(__LINE__)#)")
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.dict_to_xml(xml_tree, strict_standard_mode)- (#echo(__LINE__)#)")
 		_return = ""
 
 		if (isinstance(xml_tree, dict) and len(xml_tree) > 0):
@@ -476,7 +476,7 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 					_return += self.dict_to_xml_item_encoder(xml_node_dict['xml.item'], False, strict_standard_mode)
 
 					xml_node_tag = (xml_node_dict['xml.item']['tag']
-					                if (XmlParser.RE_TAG_DIGIT.match(xml_node_dict['xml.item']['tag']) == None) else
+					                if (XmlParser.RE_TAG_DIGIT.match(xml_node_dict['xml.item']['tag']) is None) else
 					                "digitstart__{0}".format(xml_node_dict['xml.item']['tag'])
 					               )
 
@@ -512,22 +512,22 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 		#
 			if (len(data['tag']) > 0):
 			#
-				if (re.match("\\d", data['tag']) != None): data['tag'] = "digitstart__{0}".format(data['tag'])
+				if (re.match("\\d", data['tag']) is not None): data['tag'] = "digitstart__{0}".format(data['tag'])
 				_return += "<{0}".format(data['tag'])
 
 				if ("attributes" in data):
 				#
 					for key in data['attributes']:
 					#
-						type_value = type(data['attributes'][key])
-
-						if (type_value == int or type_value == float): value = str(data['attributes'][key])
-						elif (data['attributes'][key] == None): value = ""
+						if (data['attributes'][key] is None): value = ""
 						else:
 						#
-							value = data['attributes'][key]
+							type_value = type(data['attributes'][key])
 
 							if (str != _PY_UNICODE_TYPE and type_value == _PY_UNICODE_TYPE): value = _PY_STR(value, "utf-8")
+							elif (type_value != str): value = str(data['attributes'][key])
+							else: value = data['attributes'][key]
+
 							value = value.replace("&", "&amp;")
 							value = value.replace("<", "&lt;")
 							value = value.replace(">", "&gt;")
@@ -539,26 +539,35 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 					#
 				#
 
+				value = None
+
+				if ("value" in data):
+				#
+					value = data['value']
+
+					if (str != _PY_UNICODE_TYPE and type(value) == _PY_UNICODE_TYPE): value = _PY_STR(value, "utf-8")
+					elif (type(value) != str): value = str(value)
+				#
+
 				if (close_tag
 				    and (not strict_standard_mode)
-				    and ("value" not in data or len(data['value']) < 1)
+				    and (value is None or len(value) < 1)
 				   ): _return += " />"
 				else:
 				#
 					_return += ">"
 
-					if ("value" in data):
+					if (value is not None):
 					#
-						if (str != _PY_UNICODE_TYPE and type(data['value']) == _PY_UNICODE_TYPE): data['value'] = _PY_STR(data['value'], "utf-8")
-						if (self.data_charset != "UTF-8"): data['value'] = data['value'].encode(self.data_charset)
+						if (self.data_charset != "UTF-8"): value = value.encode(self.data_charset)
 
-						if ("<" not in data['value'] and ">" not in data['value']): _return += data['value'].replace("&", "&amp;")
+						if ("<" not in value and ">" not in value): _return += value.replace("&", "&amp;")
 						elif (self.data_cdata_encoding):
 						#
-							if ("]]>" in data['value']): data['value'] = data['value'].replace("]]>", "]]]]><![CDATA[>")
-							_return += "<![CDATA[{0}]]>".format(data['value'])
+							if ("]]>" in value): value = value.replace("]]>", "]]]]><![CDATA[>")
+							_return += "<![CDATA[{0}]]>".format(value)
 						#
-						else: _return += html_escape(data['value'], True)
+						else: _return += html_escape(value, True)
 					#
 
 					if (close_tag): _return += "</{0}>".format(data['tag'])
@@ -578,7 +587,7 @@ This operation just gives back the content of self.data.
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.get()- (#echo(__LINE__)#)")
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.get()- (#echo(__LINE__)#)")
 		return self.data
 	#
 
@@ -601,7 +610,7 @@ Registers a namespace (URI) for later use with this XML reader instance.
 			if (type(uri) == _PY_UNICODE_TYPE): uri = _PY_STR(uri, "utf-8")
 		#
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.register_ns({0}, {1})- (#echo(__LINE__)#)".format(ns, uri))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.register_ns({0}, {1})- (#echo(__LINE__)#)".format(ns, uri))
 		self.data_ns[ns] = uri
 
 		if (uri not in self.data_ns_default):
@@ -624,7 +633,7 @@ tag will be saved as "tag_ns" and "tag_parsed".
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.translate_ns(node)- (#echo(__LINE__)#)")
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.translate_ns(node)- (#echo(__LINE__)#)")
 		_return = node
 
 		if (isinstance(node, dict) and "tag" in node and isinstance(node.get("xmlns"), dict)):
@@ -634,11 +643,11 @@ tag will be saved as "tag_ns" and "tag_parsed".
 
 			re_result = XmlParser.RE_NODE_NAME_XMLNS.match(node['tag'])
 
-			if (re_result != None and re_result.group(1) in node['xmlns'] and node['xmlns'][re_result.group(1)] in self.data_ns_compact):
+			if (re_result is not None and re_result.group(1) in node['xmlns'] and node['xmlns'][re_result.group(1)] in self.data_ns_compact):
 			#
 				tag_ns = XmlParser._search_dict(self.data_ns_compact[node['xmlns'][re_result.group(1)]] ,self.data_ns)
 
-				if (tag_ns != None):
+				if (tag_ns is not None):
 				#
 					_return['tag_ns'] = tag_ns
 					_return['tag_parsed'] = "{0}:{1}".format(tag_ns, re_result.group(2))
@@ -651,11 +660,11 @@ tag will be saved as "tag_ns" and "tag_parsed".
 				#
 					re_result = XmlParser.RE_NODE_NAME_XMLNS.match(key)
 
-					if (re_result != None and re_result.group(1) in node['xmlns'] and node['xmlns'][re_result.group(1)] in self.data_ns_compact):
+					if (re_result is not None and re_result.group(1) in node['xmlns'] and node['xmlns'][re_result.group(1)] in self.data_ns_compact):
 					#
 						tag_ns = XmlParser._search_dict(self.data_ns_compact[node['xmlns'][re_result.group(1)]], self.data_ns)
 
-						if (tag_ns != None):
+						if (tag_ns is not None):
 						#
 							_return['attributes']["{0}:{1}".format(tag_ns, re_result.group(2))] = node['attributes'][key]
 							del(_return['attributes'][key])
@@ -684,7 +693,7 @@ path.
 
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml._translate_ns_path({0})- (#echo(__LINE__)#)".format(node_path))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml._translate_ns_path({0})- (#echo(__LINE__)#)".format(node_path))
 		_return = node_path
 
 		nodes_list = node_path.split(" ")
@@ -699,7 +708,7 @@ path.
 			#
 				re_result = XmlParser.RE_NODE_NAME_XMLNS.match(node_name)
 
-				if (re_result == None): node_path += node_name
+				if (re_result is None): node_path += node_name
 				else:
 				#
 					node_path += "{0}:{1}".format((self.data_ns_default[self.data_ns[re_result.group(1)]]
@@ -728,10 +737,10 @@ path.
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.set(xml_tree, overwrite)- (#echo(__LINE__)#)")
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.set(xml_tree, overwrite)- (#echo(__LINE__)#)")
 		_return = False
 
-		if ((self.data == None or overwrite) and isinstance(xml_tree, dict)):
+		if ((self.data is None or overwrite) and isinstance(xml_tree, dict)):
 		#
 			self.data = xml_tree
 			_return = True
@@ -752,13 +761,13 @@ Uses or disables CDATA nodes to encode embedded XML.
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.set_cdata_encoding(use_cdata)- (#echo(__LINE__)#)")
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.set_cdata_encoding(use_cdata)- (#echo(__LINE__)#)")
 
 		if (str != _PY_UNICODE_TYPE and type(use_cdata) == _PY_UNICODE_TYPE): use_cdata = _PY_STR(use_cdata, "utf-8")
 		_type = type(use_cdata)
 
 		if ((_type == bool or _type == str) and use_cdata): self.data_cdata_encoding = True
-		elif (use_cdata == None and (not self.data_cdata_encoding)): self.data_cdata_encoding = True
+		elif (use_cdata is None and (not self.data_cdata_encoding)): self.data_cdata_encoding = True
 		else: self.data_cdata_encoding = False
 	#
 
@@ -788,13 +797,13 @@ completed.
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.set_parse_only(parse_only)- (#echo(__LINE__)#)")
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.set_parse_only(parse_only)- (#echo(__LINE__)#)")
 
 		if (str != _PY_UNICODE_TYPE and type(parse_only) == _PY_UNICODE_TYPE): parse_only = _PY_STR(parse_only, "utf-8")
 		_type = type(parse_only)
 
 		if ((_type == bool or _type == str) and parse_only): self.data_parse_only = True
-		elif (parse_only == None and (not self.data_parse_only)): self.data_parse_only = True
+		elif (parse_only is None and (not self.data_parse_only)): self.data_parse_only = True
 		else: self.data_parse_only = False
 	#
 
@@ -812,7 +821,7 @@ Unregisters a namespace or clears the cache (if ns is empty).
 
 		if (str != _PY_UNICODE_TYPE and type(ns) == _PY_UNICODE_TYPE): ns = _PY_STR(ns, "utf-8")
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.unregister_ns({0})- (#echo(__LINE__)#)".format(ns))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.unregister_ns({0})- (#echo(__LINE__)#)".format(ns))
 
 		if (len(ns) > 0):
 		#
@@ -850,7 +859,7 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 		# global: _mode, _PY_STR, _PY_UNICODE_TYPE
 		# pylint: disable=broad-except
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml_to_dict(data, treemode, strict_standard_mode)- (#echo(__LINE__)#)")
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml_to_dict(data, treemode, strict_standard_mode)- (#echo(__LINE__)#)")
 		_return = None
 
 		try:

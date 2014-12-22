@@ -56,7 +56,7 @@ Constructor __init__(XmlParserMonoXml)
 
 		AbstractXmlParser.__init__(self, parser, event_handler)
 
-		self.timeout_retries = (5 if (timeout_retries == None) else timeout_retries)
+		self.timeout_retries = (5 if (timeout_retries is None) else timeout_retries)
 		"""
 Retries before timing out
 		"""
@@ -75,7 +75,7 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result(_XmlNodeReader)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result(_XmlNodeReader)- (#echo(__LINE__)#)".format(self))
 
 		if (hasattr(_XmlNodeReader, "Read")):
 		#
@@ -218,7 +218,7 @@ algorithm.
 
 		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_parsed_dict_walker(_XmlNodeReader, {0}, {1:d})- (#echo(__LINE__)#)".format(self, node_path, xml_level))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_parsed_dict_walker(_XmlNodeReader, {0}, {1:d})- (#echo(__LINE__)#)".format(self, node_path, xml_level))
 		_return = None
 
 		if (hasattr(_XmlNodeReader,"Read")):
@@ -319,7 +319,7 @@ Parses a given XML string and return the result in the format set by
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse(data)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse(data)- (#echo(__LINE__)#)".format(self))
 
 		_return = None
 
@@ -329,7 +329,7 @@ Parses a given XML string and return the result in the format set by
 		parser_ptr.LoadXml(data)
 		parser_ptr = XmlNodeReader(parser_ptr)
 
-		if (parser_ptr != None):
+		if (parser_ptr is not None):
 		#
 			_return = (self._get_merged_result(parser_ptr)
 			           if (self.merged_mode) else
@@ -352,7 +352,7 @@ Imports a pre-parsed XML dict into the given parser instance.
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_parsed_dict_walker(data_dict)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_parsed_dict_walker(data_dict)- (#echo(__LINE__)#)".format(self))
 		_return = False
 
 		if (type(data_dict) == dict):
@@ -390,7 +390,7 @@ Uses the given XmlNodeReader to parse data for the defined parser instance.
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler != None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result(_XmlNodeReader)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result(_XmlNodeReader)- (#echo(__LINE__)#)".format(self))
 		_return = { }
 
 		if (hasattr(_XmlNodeReader, "Read")):
