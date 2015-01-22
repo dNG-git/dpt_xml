@@ -75,7 +75,7 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result(_XmlNodeReader)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result()- (#echo(__LINE__)#)".format(self))
 
 		if (hasattr(_XmlNodeReader, "Read")):
 		#
@@ -113,7 +113,7 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 						while (_XmlNodeReader.MoveToNextAttribute() and time() < timeout_time):
 						#
 							attribute_name = _XmlNodeReader.Name.lower()
-							if (str != _PY_UNICODE_TYPE and type(attribute_name) == _PY_UNICODE_TYPE): attribute_name = _PY_STR(attribute_name, "utf-8")
+							if (str is not _PY_UNICODE_TYPE and type(attribute_name) is _PY_UNICODE_TYPE): attribute_name = _PY_STR(attribute_name, "utf-8")
 
 							if (attribute_name.startswith("xmlns:")): attributes_dict["xmlns:{0}".format(attribute_name[6:])] = _XmlNodeReader.Value
 							elif (attribute_name == "xml:space"): attributes_dict['xml:space'] = _XmlNodeReader.Value.lower()
@@ -216,9 +216,9 @@ algorithm.
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (str != _PY_UNICODE_TYPE and type(node_path) == _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
+		if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_parsed_dict_walker(_XmlNodeReader, {0}, {1:d})- (#echo(__LINE__)#)".format(self, node_path, xml_level))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_parsed_dict_walker({0}, {1:d})- (#echo(__LINE__)#)".format(self, node_path, xml_level))
 		_return = None
 
 		if (hasattr(_XmlNodeReader,"Read")):
@@ -238,12 +238,12 @@ algorithm.
 					if (self.strict_standard_mode):
 					#
 						node_name = _XmlNodeReader.Name
-						if (str != _PY_UNICODE_TYPE and type(node_name) == _PY_UNICODE_TYPE): node_name = _PY_STR(node_name, "utf-8")
+						if (str is not _PY_UNICODE_TYPE and type(node_name) is _PY_UNICODE_TYPE): node_name = _PY_STR(node_name, "utf-8")
 					#
 					else:
 					#
 						node_name = _XmlNodeReader.Name.lower()
-						if (str != _PY_UNICODE_TYPE and type(node_name) == _PY_UNICODE_TYPE): node_name = _PY_STR(node_name, "utf-8")
+						if (str is not _PY_UNICODE_TYPE and type(node_name) is _PY_UNICODE_TYPE): node_name = _PY_STR(node_name, "utf-8")
 						if (node_name[:12] == "digitstart__"): node_name = node_name[12:]
 					#
 
@@ -252,7 +252,7 @@ algorithm.
 						while (_XmlNodeReader.MoveToNextAttribute() and time() < timeout_time):
 						#
 							attribute_name = _XmlNodeReader.Name.lower()
-							if (str != _PY_UNICODE_TYPE and type(attribute_name) == _PY_UNICODE_TYPE): attribute_name = _PY_STR(attribute_name, "utf-8")
+							if (str is not _PY_UNICODE_TYPE and type(attribute_name) is _PY_UNICODE_TYPE): attribute_name = _PY_STR(attribute_name, "utf-8")
 
 							if (attribute_name.startswith("xmlns:")): attributes_dict["xmlns:{0}".format(attribute_name[6:])] = _XmlNodeReader.Value
 							elif (attribute_name == "xml:space"):
@@ -319,11 +319,11 @@ Parses a given XML string and return the result in the format set by
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse(data)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse()- (#echo(__LINE__)#)".format(self))
 
 		_return = None
 
-		if (str != _PY_UNICODE_TYPE and type(data) == _PY_UNICODE_TYPE): data = _PY_STR(data, "utf-8")
+		if (str is not _PY_UNICODE_TYPE and type(data) is _PY_UNICODE_TYPE): data = _PY_STR(data, "utf-8")
 
 		parser_ptr = XmlDocument()
 		parser_ptr.LoadXml(data)
@@ -352,10 +352,10 @@ Imports a pre-parsed XML dict into the given parser instance.
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_parsed_dict_walker(data_dict)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_parsed_dict_walker()- (#echo(__LINE__)#)".format(self))
 		_return = False
 
-		if (type(data_dict) == dict):
+		if (type(data_dict) is dict):
 		#
 			if (len(data_dict['value']) > 0 or len(data_dict['attributes']) > 0 or len(data_dict['children']) > 0):
 			#
@@ -390,7 +390,7 @@ Uses the given XmlNodeReader to parse data for the defined parser instance.
 :since:  v0.1.00
 		"""
 
-		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result(_XmlNodeReader)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)".format(self))
 		_return = { }
 
 		if (hasattr(_XmlNodeReader, "Read")):
@@ -408,7 +408,7 @@ Uses the given XmlNodeReader to parse data for the defined parser instance.
 			monoxml_dict = self._get_parsed_dict_walker(_XmlNodeReader)
 			_XmlNodeReader.Close()
 
-			if (type(monoxml_dict) == dict): is_available = self._update_parser_with_parsed_dict_walker(monoxml_dict)
+			if (type(monoxml_dict) is dict): is_available = self._update_parser_with_parsed_dict_walker(monoxml_dict)
 			if (is_available): _return = self.parser.get()
 		#
 

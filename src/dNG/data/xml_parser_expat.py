@@ -94,7 +94,7 @@ completed its work.
 		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result()- (#echo(__LINE__)#)".format(self))
 		_return = None
 
-		if ((not self.parser_active) and type(self.parser_cache) == dict and len(self.parser_cache) > 0):
+		if ((not self.parser_active) and type(self.parser_cache) is dict and len(self.parser_cache) > 0):
 		#
 			_return = self.parser_cache
 			self.parser_cache = { }
@@ -117,7 +117,7 @@ required information.
 :since: v0.1.00
 		"""
 
-		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata(data)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata()- (#echo(__LINE__)#)".format(self))
 
 		if (self.parser_active):
 		#
@@ -138,7 +138,7 @@ Method to handle "end element" callbacks.
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
+		if (str is not _PY_UNICODE_TYPE and type(name) is _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
 		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end({1})- (#echo(__LINE__)#)".format(self, name))
 
@@ -187,7 +187,7 @@ required information. (Merged XML parser)
 :since: v0.1.00
 		"""
 
-		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata_merged(data)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata_merged()- (#echo(__LINE__)#)".format(self))
 
 		if (self.parser_active):
 		#
@@ -208,7 +208,7 @@ Method to handle "end element" callbacks. (Merged XML parser)
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
+		if (str is not _PY_UNICODE_TYPE and type(name) is _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
 		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end_merged({1})- (#echo(__LINE__)#)".format(self, name))
 
@@ -253,9 +253,9 @@ Method to handle "start element" callbacks. (Merged XML parser)
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
+		if (str is not _PY_UNICODE_TYPE and type(name) is _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start_merged({1}, attributes)- (#echo(__LINE__)#)".format(self, name))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start_merged({1})- (#echo(__LINE__)#)".format(self, name))
 
 		if (not self.parser_active):
 		#
@@ -275,7 +275,7 @@ Method to handle "start element" callbacks. (Merged XML parser)
 
 		for key in attributes:
 		#
-			if (str != _PY_UNICODE_TYPE and type(key) == _PY_UNICODE_TYPE): key = _PY_STR(key, "utf-8")
+			if (str is not _PY_UNICODE_TYPE and type(key) is _PY_UNICODE_TYPE): key = _PY_STR(key, "utf-8")
 			key_lowercase = key.lower()
 			value = attributes[key]
 
@@ -325,9 +325,9 @@ Method to handle "start element" callbacks.
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (str != _PY_UNICODE_TYPE and type(name) == _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
+		if (str is not _PY_UNICODE_TYPE and type(name) is _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start({1}, attributes)- (#echo(__LINE__)#)".format(self, name))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start({1})- (#echo(__LINE__)#)".format(self, name))
 
 		if (not self.parser_active):
 		#
@@ -351,7 +351,7 @@ Method to handle "start element" callbacks.
 
 		for key in attributes:
 		#
-			if (str != _PY_UNICODE_TYPE and type(key) == _PY_UNICODE_TYPE): key = _PY_STR(key, "utf-8")
+			if (str is not _PY_UNICODE_TYPE and type(key) is _PY_UNICODE_TYPE): key = _PY_STR(key, "utf-8")
 			key_lowercase = key.lower()
 			value = attributes[key]
 
@@ -389,12 +389,12 @@ Parses a given XML string and return the result in the format set by
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse(data)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse()- (#echo(__LINE__)#)".format(self))
 
 		if (re.search("<\\?xml(.+?)encoding=", data) is None):
 		#
 			parser_ptr = expat.ParserCreate("UTF-8")
-			if (str != _PY_UNICODE_TYPE and type(data) == _PY_UNICODE_TYPE): data = _PY_STR(data, "utf-8")
+			if (str is not _PY_UNICODE_TYPE and type(data) is _PY_UNICODE_TYPE): data = _PY_STR(data, "utf-8")
 		#
 		else: parser_ptr = expat.ParserCreate()
 
@@ -434,7 +434,7 @@ the parser completed its work.
 		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)".format(self))
 		_return = None
 
-		if ((not self.parser_active) and type(self.parser_cache) == dict and len(self.parser_cache) > 0):
+		if ((not self.parser_active) and type(self.parser_cache) is dict and len(self.parser_cache) > 0):
 		#
 			self.parser.set({ })
 

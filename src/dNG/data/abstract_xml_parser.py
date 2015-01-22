@@ -128,12 +128,11 @@ Changes the parser mode regarding being strict standard compliant.
 
 		# global: _PY_STR, _PY_UNICODE_TYPE
 
-		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_strict_standard(strict_standard_mode)- (#echo(__LINE__)#)".format(self))
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_strict_standard()- (#echo(__LINE__)#)".format(self))
 
-		if (str != _PY_UNICODE_TYPE and type(strict_standard_mode) == _PY_UNICODE_TYPE): strict_standard_mode = _PY_STR(strict_standard_mode, "utf-8")
 		_type = type(strict_standard_mode)
 
-		if ((_type == bool or _type == str) and strict_standard_mode): self.strict_standard_mode = True
+		if ((_type is bool and strict_standard_mode) or (_type is str and strict_standard_mode == "1")): self.strict_standard_mode = True
 		elif (strict_standard_mode is None and (not self.strict_standard_mode)): self.strict_standard_mode = True
 		else: self.strict_standard_mode = False
 	#
