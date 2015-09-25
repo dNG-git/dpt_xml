@@ -521,11 +521,11 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 						if (data['attributes'][key] is None): value = ""
 						else:
 						#
-							value_type = type(data['attributes'][key])
+							value = data['attributes'][key]
+							value_type = type(value)
 
 							if (str is not _PY_UNICODE_TYPE and value_type is _PY_UNICODE_TYPE): value = _PY_STR(value, "utf-8")
-							elif (value_type is not str): value = str(data['attributes'][key])
-							else: value = data['attributes'][key]
+							elif (value_type is not str): value = str(value)
 
 							value = value.replace("&", "&amp;")
 							value = value.replace("<", "&lt;")
