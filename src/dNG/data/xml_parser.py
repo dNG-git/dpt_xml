@@ -591,6 +591,28 @@ This operation just gives back the content of self.data.
 		return self.data
 	#
 
+	def parse(self, data, strict_standard_mode = True):
+	#
+		"""
+Parses the given XML data.
+
+:param data: Input XML data
+:param strict_standard_mode: True to be standard compliant
+
+:since: v0.1.02
+		"""
+
+		if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.parse()- (#echo(__LINE__)#)")
+
+		self.data = None
+		self.data_cache_node = ""
+		self.data_cache_ptr = None
+
+		self.parser_instance.set_mode(AbstractXmlParser.MODE_TREE)
+		self.parser_instance.set_strict_standard(strict_standard_mode)
+		self.parser_instance.parse(data)
+	#
+
 	def register_ns(self, ns, uri):
 	#
 		"""
@@ -847,8 +869,8 @@ Unregisters a namespace or clears the cache (if ns is empty).
 Converts XML data into a multi-dimensional XML tree or merged one.
 
 :param data: Input XML data
-:param strict_standard_mode: True to be standard compliant
 :param treemode: Create a multi-dimensional result
+:param strict_standard_mode: True to be standard compliant
 
 :return: (dict) Multi-dimensional XML tree or merged one; None on error
 :since:  v0.1.00
@@ -864,20 +886,22 @@ Converts XML data into a multi-dimensional XML tree or merged one.
 		#
 			if (treemode):
 			#
-				self.parser_instance.set_mode(AbstractXmlParser.MODE_TREE)
-				self.parser_instance.set_strict_standard(strict_standard_mode)
-			#
-			else: self.parser_instance.set_mode(AbstractXmlParser.MODE_MERGED)
+				self.parse(data, strict_standard_mode)
+				_return = self.data.copy()
 
-			_return = self.parser_instance.parse(data)
+				if (self.data_parse_only):
+				#
+					self.data = None
+					self.unregister_ns()
+				#
+			#
+			else:
+			#
+				self.parser_instance.set_mode(AbstractXmlParser.MODE_MERGED)
+				_return = self.parser_instance.parse(data)
+			#
 		#
 		except Exception: pass
-
-		if (treemode and self.data_parse_only):
-		#
-			self.data = None
-			self.unregister_ns()
-		#
 
 		return _return
 	#
