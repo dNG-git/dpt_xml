@@ -5,4 +5,5 @@ nbproject
 /_extras
 /build
 /make*.py*
-/xml.*
+/py_xml.*
+/xml.py.*
