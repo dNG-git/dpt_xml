@@ -19,12 +19,13 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 # pylint: disable=import-error,invalid-name,unused-import
 
+from weakref import proxy, ProxyTypes
+import re
+
 try: from html import escape as html_escape
 except ImportError:
     from cgi import escape as html_escape
 #
-
-import re
 
 _IMPLEMENTATION_JAVA = 1
 """
@@ -94,22 +95,21 @@ RegExp to find node names starting with a number (and are not standard
 compliant)
     """
 
-    def __init__(self, xml_charset = "UTF-8", parse_only = True, node_type = dict, timeout_retries = 5, event_handler = None):
+    def __init__(self, xml_charset = "UTF-8", node_type = dict, timeout_retries = 5, log_handler = None):
         """
 Constructor __init__(XmlParser)
 
 :param xml_charset: Charset to be added as information to XML output
-:param parse_only: Parse data only
 :param node_type: Dict implementation for new nodes
 :param timeout_retries: Retries before timing out
-:param event_handler: EventHandler to use
+:param log_handler: Log handler to use
 
 :since: v0.1.00
         """
 
         # global: _IMPLEMENTATION_MONO, _mode
 
-        self.data = None
+        self._data = None
         """
 XML data
         """
@@ -153,13 +153,9 @@ Cache of node paths with a predefined NS (key = Compact name)
         """
 Cache of node paths with a predefined NS (key = Full name)
         """
-        self.data_parse_only = parse_only
+        self._log_handler = None
         """
-Parse data only
-        """
-        self.event_handler = event_handler
-        """
-The EventHandler is called whenever debug messages should be logged or errors
+The log handler is called whenever debug messages should be logged or errors
 happened.
         """
         self.node_type = node_type
@@ -171,8 +167,47 @@ Dict implementation used to create new nodes
 The selected parser implementation
         """
 
-        if (_mode == _IMPLEMENTATION_MONO): self.parser_instance = XmlParserMonoXml(self, timeout_retries, event_handler)
-        else: self.parser_instance = XmlParserExpat(self, event_handler)
+        if (log_handler is not None): self.log_handler = log_handler
+
+        if (_mode == _IMPLEMENTATION_MONO): self.parser_instance = XmlParserMonoXml(self, timeout_retries, log_handler)
+        else: self.parser_instance = XmlParserExpat(self, log_handler)
+    #
+
+    @property
+    def data(self):
+        """
+Return the Python representation data of this "XmlParser" instance.
+
+:return: (mixed) Python representation data; None if not parsed
+:since:  v1.0.0
+        """
+
+        return self._data.copy()
+    #
+
+    @property
+    def log_handler(self):
+        """
+Returns the LogHandler.
+
+:return: (object) LogHandler in use
+:since:  v1.0.0
+        """
+
+        return self._log_handler
+    #
+
+    @log_handler.setter
+    def log_handler(self, log_handler):
+        """
+Sets the LogHandler.
+
+:param log_handler: LogHandler to use
+
+:since: v1.0.0
+        """
+
+        self._log_handler = (log_handler if (isinstance(log_handler, ProxyTypes)) else proxy(log_handler))
     #
 
     def add_node(self, node_path, value = "", attributes = "", add_recursively = True):
@@ -192,17 +227,17 @@ Adds a XML node with content - recursively if required.
 
         if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.add_node({0})- (#echo(__LINE__)#)".format(node_path))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.add_node({0})- (#echo(__LINE__)#)".format(node_path))
         _return = False
 
-        if (self.data is None): self.data = self.node_type()
+        if (self._data is None): self._data = self.node_type()
 
         if (type(node_path) == str and (not isinstance(value, dict)) and (not isinstance(value, list))):
             node_path = self._translate_ns_path(node_path)
 
             if (self.data_cache_node == "" or re.match("^{0}".format(re.escape(node_path)), self.data_cache_node,re.I) is None):
                 node_path_done = ""
-                node_ptr = self.data
+                node_ptr = self._data
             else:
                 node_path = node_path[len(self.data_cache_node):].strip()
                 node_path_done = self.data_cache_node
@@ -403,7 +438,7 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 :since:  v0.1.00
         """
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.dict_to_xml()- (#echo(__LINE__)#)")
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.dict_to_xml()- (#echo(__LINE__)#)")
         _return = ""
 
         if (isinstance(xml_tree, dict) and len(xml_tree) > 0):
@@ -508,18 +543,6 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
         return _return
     #
 
-    def get(self):
-        """
-This operation just gives back the content of self.data.
-
-:return: (dict) XML dict tree; None if not parsed error
-:since:  v0.1.00
-        """
-
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.get()- (#echo(__LINE__)#)")
-        return self.data
-    #
-
     def parse(self, data, strict_standard_mode = True):
         """
 Parses the given XML data.
@@ -530,9 +553,9 @@ Parses the given XML data.
 :since: v0.1.02
         """
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.parse()- (#echo(__LINE__)#)")
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.parse()- (#echo(__LINE__)#)")
 
-        self.data = None
+        self._data = None
         self.data_cache_node = ""
         self.data_cache_ptr = None
 
@@ -558,7 +581,7 @@ Registers a namespace (URI) for later use with this XML reader instance.
             if (type(uri) is _PY_UNICODE_TYPE): uri = _PY_STR(uri, "utf-8")
         #
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.register_ns({0}, {1})- (#echo(__LINE__)#)".format(ns, uri))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.register_ns({0}, {1})- (#echo(__LINE__)#)".format(ns, uri))
         self.data_ns[ns] = uri
 
         if (uri not in self.data_ns_default):
@@ -579,7 +602,7 @@ tag will be saved as "tag_ns" and "tag_parsed".
 :since:  v0.1.00
         """
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.translate_ns()- (#echo(__LINE__)#)")
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.translate_ns()- (#echo(__LINE__)#)")
         _return = node
 
         if (isinstance(node, dict) and "tag" in node and isinstance(node.get("xmlns"), dict)):
@@ -631,7 +654,7 @@ path.
 
         if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml._translate_ns_path({0})- (#echo(__LINE__)#)".format(node_path))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml._translate_ns_path({0})- (#echo(__LINE__)#)".format(node_path))
         _return = node_path
 
         nodes_list = node_path.split(" ")
@@ -659,22 +682,22 @@ path.
         return _return
     #
 
-    def set(self, xml_tree, overwrite = False):
+    def set_xml(self, data_dict, overwrite = False):
         """
-"Imports" a XML tree into the cache.
+"Imports" Python representation data for this "XmlResource" instance.
 
-:param xml_tree: Input tree dict
+:param data_dict: Python representation data
 :param overwrite: True to overwrite the current (non-empty) cache
 
 :return: (bool) True on success
-:since:  v0.1.00
+:since:  v1.0.0
         """
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.set()- (#echo(__LINE__)#)")
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.set_xml()- (#echo(__LINE__)#)")
         _return = False
 
-        if ((self.data is None or overwrite) and isinstance(xml_tree, dict)):
-            self.data = xml_tree
+        if ((self._data is None or overwrite) and isinstance(data_dict, dict)):
+            self._data = data_dict
             _return = True
         #
 
@@ -692,46 +715,13 @@ Uses or disables CDATA nodes to encode embedded XML.
 
         # global: _PY_STR, _PY_UNICODE_TYPE
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.set_cdata_encoding()- (#echo(__LINE__)#)")
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.set_cdata_encoding()- (#echo(__LINE__)#)")
 
         _type = type(use_cdata)
 
         if ((_type is bool and use_cdata) or (_type is str and use_cdata == "1")): self.data_cdata_encoding = True
         elif (use_cdata is None and (not self.data_cdata_encoding)): self.data_cdata_encoding = True
         else: self.data_cdata_encoding = False
-    #
-
-    def set_event_handler(self, event_handler):
-        """
-Sets the EventHandler.
-
-:param event_handler: EventHandler to use
-
-:since: v0.1.00
-        """
-
-        self.event_handler = event_handler
-    #
-
-    def set_parse_only(self, parse_only = True):
-        """
-Changes the object behaviour of deleting cached data after parsing is
-completed.
-
-:param parse_only: Parse data only
-
-:since: v0.1.00
-        """
-
-        # global: _PY_STR, _PY_UNICODE_TYPE
-
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.set_parse_only()- (#echo(__LINE__)#)")
-
-        _type = type(parse_only)
-
-        if ((_type is bool and parse_only) or (_type is str and parse_only == "1")): self.data_parse_only = True
-        elif (parse_only is None and (not self.data_parse_only)): self.data_parse_only = True
-        else: self.data_parse_only = False
     #
 
     def unregister_ns(self, ns = ""):
@@ -747,7 +737,7 @@ Unregisters a namespace or clears the cache (if ns is empty).
 
         if (str is not _PY_UNICODE_TYPE and type(ns) is _PY_UNICODE_TYPE): ns = _PY_STR(ns, "utf-8")
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.unregister_ns({0})- (#echo(__LINE__)#)".format(ns))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.unregister_ns({0})- (#echo(__LINE__)#)".format(ns))
 
         if (len(ns) > 0):
             if (ns in self.data_ns):
@@ -765,37 +755,25 @@ Unregisters a namespace or clears the cache (if ns is empty).
         #
     #
 
-    def xml_to_dict(self, data, treemode = True, strict_standard_mode = True):
+    def xml_to_merged_dict(self, data):
         """
-Converts XML data into a multi-dimensional XML tree or merged one.
+Converts XML data into a merged XML dictionary.
 
 :param data: Input XML data
-:param treemode: Create a multi-dimensional result
-:param strict_standard_mode: True to be standard compliant
 
-:return: (dict) Multi-dimensional XML tree or merged one; None on error
-:since:  v0.1.00
+:return: (dict) Merged XML dictionary; None on error
+:since:  v1.0.0
         """
 
         # global: _mode, _PY_STR, _PY_UNICODE_TYPE
         # pylint: disable=broad-except
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -xml.xml_to_dict()- (#echo(__LINE__)#)")
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.xml_to_merged_dict()- (#echo(__LINE__)#)")
         _return = None
 
         try:
-            if (treemode):
-                self.parse(data, strict_standard_mode)
-                _return = self.data.copy()
-
-                if (self.data_parse_only):
-                    self.data = None
-                    self.unregister_ns()
-                #
-            else:
-                self.parser_instance.set_mode(AbstractXmlParser.MODE_MERGED)
-                _return = self.parser_instance.parse(data)
-            #
+            self.parser_instance.set_mode(AbstractXmlParser.MODE_MERGED)
+            _return = self.parser_instance.parse(data)
         except Exception: pass
 
         return _return
@@ -823,6 +801,33 @@ Searches haystack for needle.
                     break
                 #
             #
+        #
+
+        return _return
+    #
+
+    @staticmethod
+    def xml_to_dict(data, treemode = True, strict_standard_mode = True):
+        """
+Converts XML data into a multi-dimensional XML tree or merged one.
+
+:param data: Input XML data
+:param treemode: Create a multi-dimensional result
+:param strict_standard_mode: True to be standard compliant
+
+:return: (dict) Multi-dimensional XML tree or merged one; None on error
+:since:  v1.0.0
+        """
+
+        _return = None
+
+        xml_parser = XmlParser()
+
+        if (treemode):
+            xml_parser.parse(data, strict_standard_mode)
+            _return = xml_parser.data
+        else:
+            _return = xml_parser.xml_to_merged_dict(data)
         #
 
         return _return

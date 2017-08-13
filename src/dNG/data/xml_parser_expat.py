@@ -36,17 +36,17 @@ This implementation supports expat for XML parsing.
             Mozilla Public License, v. 2.0
     """
 
-    def __init__(self, parser, event_handler = None):
+    def __init__(self, parser, log_handler = None):
         """
 Constructor __init__(XmlParserExpat)
 
 :param parser: Container for the XML document
-:param event_handler: EventHandler to use
+:param log_handler: Log handler to use
 
 :since: v0.1.00
         """
 
-        AbstractXmlParser.__init__(self, parser, event_handler)
+        AbstractXmlParser.__init__(self, parser, log_handler)
 
         self.node_path = ""
         """
@@ -87,7 +87,7 @@ completed its work.
 :since:  v0.1.00
         """
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result()- (#echo(__LINE__)#)".format(self))
         _return = None
 
         if ((not self.parser_active) and type(self.parser_cache) is dict and len(self.parser_cache) > 0):
@@ -111,7 +111,7 @@ required information.
 :since: v0.1.00
         """
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata()- (#echo(__LINE__)#)".format(self))
 
         if (self.parser_active):
             if ("value" in self.parser_cache[self.parser_cache_link[self.node_path]]): self.parser_cache[self.parser_cache_link[self.node_path]]['value'] += data
@@ -132,7 +132,7 @@ Method to handle "end element" callbacks.
 
         if (str is not _PY_UNICODE_TYPE and type(name) is _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end({1})- (#echo(__LINE__)#)".format(self, name))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end({1})- (#echo(__LINE__)#)".format(self, name))
 
         if (self.parser_active):
             node_path = self.parser_cache_link[self.node_path]
@@ -175,7 +175,7 @@ required information. (Merged XML parser)
 :since: v0.1.00
         """
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata_merged()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata_merged()- (#echo(__LINE__)#)".format(self))
 
         if (self.parser_active):
             if (self.parser_cache_link[self.node_path] > 0): self.parser_cache[self.node_path][self.parser_cache_link[self.node_path]]['value'] += data
@@ -196,7 +196,7 @@ Method to handle "end element" callbacks. (Merged XML parser)
 
         if (str is not _PY_UNICODE_TYPE and type(name) is _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end_merged({1})- (#echo(__LINE__)#)".format(self, name))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end_merged({1})- (#echo(__LINE__)#)".format(self, name))
 
         if (self.parser_active):
             node_ptr = (self.parser_cache[self.node_path][self.parser_cache_link[self.node_path]]
@@ -237,7 +237,7 @@ Method to handle "start element" callbacks. (Merged XML parser)
 
         if (str is not _PY_UNICODE_TYPE and type(name) is _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start_merged({1})- (#echo(__LINE__)#)".format(self, name))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start_merged({1})- (#echo(__LINE__)#)".format(self, name))
 
         if (not self.parser_active):
             self.node_path = ""
@@ -298,7 +298,7 @@ Method to handle "start element" callbacks.
 
         if (str is not _PY_UNICODE_TYPE and type(name) is _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start({1})- (#echo(__LINE__)#)".format(self, name))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start({1})- (#echo(__LINE__)#)".format(self, name))
 
         if (not self.parser_active):
             self.node_path = ""
@@ -351,7 +351,7 @@ Parses a given XML string and return the result in the format set by
 
         # global: _PY_STR, _PY_UNICODE_TYPE
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse()- (#echo(__LINE__)#)".format(self))
 
         if (re.search("<\\?xml(.+?)encoding=", data) is None):
             parser_ptr = expat.ParserCreate("UTF-8")
@@ -387,11 +387,11 @@ the parser completed its work.
 :since:  v0.1.00
         """
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)".format(self))
         _return = None
 
         if ((not self.parser_active) and type(self.parser_cache) is dict and len(self.parser_cache) > 0):
-            self.parser.set({ })
+            self.parser.data = { }
 
             for node_key in self.parser_cache:
                 node_dict = self.parser_cache[node_key]

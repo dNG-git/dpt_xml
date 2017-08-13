@@ -16,6 +16,13 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 setup.py
 """
 
+from os import path
+
+from distutils.core import setup
+
+from dNG.distutils.command.build_py import BuildPy
+from dNG.distutils.temporary_directory import TemporaryDirectory
+
 def get_version():
     """
 Returns the version currently in development.
@@ -24,14 +31,8 @@ Returns the version currently in development.
 :since:  v0.1.00
     """
 
-    return "v0.1.02"
+    return "v1.0.0"
 #
-
-from dNG.distutils.command.build_py import BuildPy
-from dNG.distutils.temporary_directory import TemporaryDirectory
-
-from distutils.core import setup
-from os import path
 
 with TemporaryDirectory(dir = ".") as build_directory:
     parameters = { "pyXmlVersion": get_version() }
@@ -41,7 +42,7 @@ with TemporaryDirectory(dir = ".") as build_directory:
 
     _build_path = path.join(build_directory, "src")
 
-    setup(name = "XML.py",
+    setup(name = "dng-xml",
           version = get_version(),
           description = "Multiple XML parsers: Common abstraction layer",
           long_description = """XML.py should be used to parse and manipulate small XML resources in memory.""",
@@ -51,6 +52,8 @@ with TemporaryDirectory(dir = ".") as build_directory:
           url = "https://www.direct-netware.de/redirect?py;xml",
 
           platforms = [ "any" ],
+
+          setup_requires = "dng-builder-suite",
 
           package_dir = { "": _build_path },
           packages = [ "dNG" ],

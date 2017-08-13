@@ -39,19 +39,19 @@ This implementation supports XmlNodeReader for XML parsing.
             Mozilla Public License, v. 2.0
     """
 
-    def __init__(self, parser, timeout_retries = 5, event_handler = None):
+    def __init__(self, parser, timeout_retries = 5, log_handler = None):
         """
 Constructor __init__(XmlParserMonoXml)
 
 :param parser: Container for the XML document
 :param current_time: Current UNIX timestamp
 :param timeout_retries: Retries before timing out
-:param event_handler: EventHandler to use
+:param log_handler: Log handler to use
 
 :since: v0.1.00
         """
 
-        AbstractXmlParser.__init__(self, parser, event_handler)
+        AbstractXmlParser.__init__(self, parser, log_handler)
 
         self.timeout_retries = (5 if (timeout_retries is None) else timeout_retries)
         """
@@ -71,7 +71,7 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 
         # global: _PY_STR, _PY_UNICODE_TYPE
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result()- (#echo(__LINE__)#)".format(self))
 
         if (hasattr(_XmlNodeReader, "Read")):
             _return = { }
@@ -192,7 +192,7 @@ algorithm.
 
         if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_parsed_dict_walker({0}, {1:d})- (#echo(__LINE__)#)".format(self, node_path, xml_level))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_parsed_dict_walker({0}, {1:d})- (#echo(__LINE__)#)".format(self, node_path, xml_level))
         _return = None
 
         if (hasattr(_XmlNodeReader,"Read")):
@@ -275,7 +275,7 @@ Parses a given XML string and return the result in the format set by
 
         # global: _PY_STR, _PY_UNICODE_TYPE
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse()- (#echo(__LINE__)#)".format(self))
 
         _return = None
 
@@ -306,7 +306,7 @@ Imports a pre-parsed XML dict into the given parser instance.
 :since:  v0.1.00
         """
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_parsed_dict_walker()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_parsed_dict_walker()- (#echo(__LINE__)#)".format(self))
         _return = False
 
         if (type(data_dict) is dict):
@@ -339,14 +339,14 @@ Uses the given XmlNodeReader to parse data for the defined parser instance.
 :since:  v0.1.00
         """
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)".format(self))
         _return = { }
 
         if (hasattr(_XmlNodeReader, "Read")):
             is_available = True
             timeout_time = (time() + self.timeout_retries)
 
-            self.parser.set({ })
+            self.parser.data = { }
 
             while (is_available
                    and _XmlNodeReader.NodeType != XmlNodeType.Element

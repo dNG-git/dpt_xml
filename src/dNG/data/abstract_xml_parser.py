@@ -19,6 +19,8 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 # pylint: disable=invalid-name
 
+from weakref import proxy, ProxyTypes
+
 try:
     _PY_STR = unicode.encode
     _PY_UNICODE_TYPE = unicode
@@ -51,25 +53,25 @@ Non standard compliant merged parser mode
 Tree parsing mode
     """
 
-    def __init__(self, parser, event_handler = None):
+    def __init__(self, parser, log_handler = None):
         """
 Constructor __init__(XmlParserExpat)
 
 :param parser: Container for the XML document
-:param event_handler: EventHandler to use
+:param log_handler: Log handler to use
 
 :since: v0.1.00
         """
 
-        if (event_handler is not None): event_handler.debug("#echo(__FILEPATH__)# -{0!r}.__init__()- (#echo(__LINE__)#)".format(self))
+        if (log_handler is not None): log_handler.debug("#echo(__FILEPATH__)# -{0!r}.__init__()- (#echo(__LINE__)#)".format(self))
 
         self.merged_mode = False
         """
 True if the parser is set to merged
         """
-        self.event_handler = event_handler
+        self._log_handler = None
         """
-The EventHandler is called whenever debug messages should be logged or errors
+The log handler is called whenever debug messages should be logged or errors
 happened.
         """
         self.parser = parser
@@ -80,6 +82,31 @@ Container for the XML document
         """
 True to be standard conform
         """
+    #
+
+    @property
+    def log_handler(self):
+        """
+Returns the LogHandler.
+
+:return: (object) LogHandler in use
+:since:  v1.0.0
+        """
+
+        return self._log_handler
+    #
+
+    @log_handler.setter
+    def log_handler(self, log_handler):
+        """
+Sets the LogHandler.
+
+:param log_handler: LogHandler to use
+
+:since: v1.0.0
+        """
+
+        self._log_handler = (log_handler if (isinstance(log_handler, ProxyTypes)) else proxy(log_handler))
     #
 
     def parse(self, data):
@@ -103,7 +130,7 @@ Define the parser mode MODE_MERGED or MODE_TREE.
 :since: v0.1.00
         """
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_mode({1:d})- (#echo(__LINE__)#)".format(self, mode))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_mode({1:d})- (#echo(__LINE__)#)".format(self, mode))
 
         self.merged_mode = (mode == AbstractXmlParser.MODE_MERGED)
     #
@@ -119,7 +146,7 @@ Changes the parser mode regarding being strict standard compliant.
 
         # global: _PY_STR, _PY_UNICODE_TYPE
 
-        if (self.event_handler is not None): self.event_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_strict_standard()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_strict_standard()- (#echo(__LINE__)#)".format(self))
 
         _type = type(strict_standard_mode)
 
