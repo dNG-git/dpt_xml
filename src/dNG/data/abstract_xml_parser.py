@@ -37,7 +37,7 @@ implementations.
 :author:    direct Netware Group
 :copyright: direct Netware Group - All rights reserved
 :package:   XML.py
-:since:     v0.1.00
+:since:     v0.1.0
 :license:   https://www.direct-netware.de/redirect?licenses;mpl2
             Mozilla Public License, v. 2.0
     """
@@ -60,7 +60,7 @@ Constructor __init__(XmlParserExpat)
 :param parser: Container for the XML document
 :param log_handler: Log handler to use
 
-:since: v0.1.00
+:since: v0.1.0
         """
 
         if (log_handler is not None): log_handler.debug("#echo(__FILEPATH__)# -{0!r}.__init__()- (#echo(__LINE__)#)".format(self))
@@ -115,7 +115,7 @@ Parses a given XML string and return the result in the format set by
 "set_mode()" and "set_strict_standard()".
 
 :return: (dict) Multi-dimensional or merged XML tree; None on error
-:since:  v0.1.01
+:since:  v0.1.1
         """
 
         raise RuntimeError("Not implemented")
@@ -127,7 +127,7 @@ Define the parser mode MODE_MERGED or MODE_TREE.
 
 :param mode: Mode to select
 
-:since: v0.1.00
+:since: v0.1.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_mode({1:d})- (#echo(__LINE__)#)".format(self, mode))
@@ -141,7 +141,7 @@ Changes the parser mode regarding being strict standard compliant.
 
 :param strict_standard_mode: True to be standard compliant
 
-:since: v0.1.00
+:since: v0.1.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE

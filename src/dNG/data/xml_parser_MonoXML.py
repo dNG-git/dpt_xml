@@ -34,7 +34,7 @@ This implementation supports XmlNodeReader for XML parsing.
 :author:    direct Netware Group
 :copyright: direct Netware Group - All rights reserved
 :package:   XML.py
-:since:     v0.1.00
+:since:     v0.1.0
 :license:   https://www.direct-netware.de/redirect?licenses;mpl2
             Mozilla Public License, v. 2.0
     """
@@ -48,7 +48,7 @@ Constructor __init__(XmlParserMonoXml)
 :param timeout_retries: Retries before timing out
 :param log_handler: Log handler to use
 
-:since: v0.1.00
+:since: v0.1.0
         """
 
         AbstractXmlParser.__init__(self, parser, log_handler)
@@ -66,7 +66,7 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 :param _XmlNodeReader: XmlNodeReader object
 
 :return: (dict) Merged XML tree; None on error
-:since:  v0.1.00
+:since:  v0.1.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -183,9 +183,8 @@ algorithm.
 :param node_path: Old node path (for recursive use only)
 :param xml_level: Current XML depth
 
-:access: protected
 :return: (dict) XML tree node; None on error
-:since:  v0.1.00
+:since:  v0.1.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -270,7 +269,7 @@ Parses a given XML string and return the result in the format set by
 "set_mode()" and "set_strict_standard()".
 
 :return: (dict) Multi-dimensional or merged XML tree; None on error
-:since:  v0.1.01
+:since:  v0.1.1
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -301,9 +300,8 @@ Imports a pre-parsed XML dict into the given parser instance.
 
 :param data_dict: Result dict of a "_get_parsed_dict_walker()"
 
-:access: protected
 :return: (bool) True on success
-:since:  v0.1.00
+:since:  v0.1.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_parsed_dict_walker()- (#echo(__LINE__)#)".format(self))
@@ -336,7 +334,7 @@ Uses the given XmlNodeReader to parse data for the defined parser instance.
 :param _XmlNodeReader: XmlNodeReader object
 
 :return: (dict) Multi-dimensional XML tree
-:since:  v0.1.00
+:since:  v0.1.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)".format(self))

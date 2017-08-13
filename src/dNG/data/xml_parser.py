@@ -72,7 +72,7 @@ This class provides a bridge between Python and XML to read XML on the fly.
 :author:    direct Netware Group
 :copyright: direct Netware Group - All rights reserved
 :package:   XML.py
-:since:     v0.1.00
+:since:     v0.1.0
 :license:   https://www.direct-netware.de/redirect?licenses;mpl2
             Mozilla Public License, v. 2.0
     """
@@ -104,7 +104,7 @@ Constructor __init__(XmlParser)
 :param timeout_retries: Retries before timing out
 :param log_handler: Log handler to use
 
-:since: v0.1.00
+:since: v0.1.0
         """
 
         # global: _IMPLEMENTATION_MONO, _mode
@@ -220,7 +220,7 @@ Adds a XML node with content - recursively if required.
 :param add_recursively: True to create the required tree recursively
 
 :return: (bool) False on error
-:since:  v0.1.00
+:since:  v0.1.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -375,7 +375,7 @@ Caches XML namespace data for the given XML node.
 :param node_name: XML node name
 :param node_dict: XML node
 
-:since: v0.1.00
+:since: v0.1.0
         """
 
         node_ns_name = ""
@@ -410,7 +410,7 @@ Convert an XML leaf to a node.
 :param node_path_done: XML node path containing the given XML node
 :param node_name: XML leaf name to be converted to a node
 
-:since: v0.1.00
+:since: v0.1.0
         """
 
         node_ptr[node_name]['level'] = ((1 + node_ptr['xml.item']['level'])
@@ -435,7 +435,7 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 :param strict_standard_mode: Be standard conform
 
 :return: (str) XML output string
-:since:  v0.1.00
+:since:  v0.1.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.dict_to_xml()- (#echo(__LINE__)#)")
@@ -473,9 +473,8 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 :param close_tag: Output will contain an ending tag if true
 :param strict_standard_mode: Be standard conform
 
-:access: protected
 :return: (str) XML output string
-:since:  v0.1.00
+:since:  v0.1.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -550,7 +549,7 @@ Parses the given XML data.
 :param data: Input XML data
 :param strict_standard_mode: True to be standard compliant
 
-:since: v0.1.02
+:since: v0.1.2
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.parse()- (#echo(__LINE__)#)")
@@ -571,7 +570,7 @@ Registers a namespace (URI) for later use with this XML reader instance.
 :param ns: Output relevant namespace definition
 :param uri: Uniform Resource Identifier
 
-:since: v0.1.00
+:since: v0.1.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -599,7 +598,7 @@ tag will be saved as "tag_ns" and "tag_parsed".
 :param node: XML tree node
 
 :return: (dict) Checked XML tree node
-:since:  v0.1.00
+:since:  v0.1.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.translate_ns()- (#echo(__LINE__)#)")
@@ -647,7 +646,7 @@ path.
 :param node_path: Path to the new node; delimiter is space
 
 :return: (str) Output node path
-:since:  v0.1.00
+:since:  v0.1.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -710,7 +709,7 @@ Uses or disables CDATA nodes to encode embedded XML.
 
 :param use_cdata: Use CDATA nodes
 
-:since: v0.1.00
+:since: v0.1.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -730,7 +729,7 @@ Unregisters a namespace or clears the cache (if ns is empty).
 
 :param ns: Output relevant namespace definition
 
-:since: v0.1.00
+:since: v0.1.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -787,9 +786,8 @@ Searches haystack for needle.
 :param needle: Value to be searched for
 :param haystack: Dict to search in
 
-:access: protected
 :return: (mixed) Key; None on error
-:since:  v0.1.00
+:since:  v0.1.0
         """
 
         _return = None
