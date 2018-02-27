@@ -60,14 +60,14 @@ Constructor __init__(XmlResource)
     @XmlParser.data.setter
     def data(self, data_dict):
         """
-Sets the Python representation data of this "JsonResource" instance.
+Sets the Python representation data of this "XmlResource" instance.
 
 :param data_dict: Python representation data
 
 :since: v1.0.0
         """
 
-        self.set_xml(data_dict, True)
+        self.set_xml_tree(data_dict, True)
     #
 
     @property

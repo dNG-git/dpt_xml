@@ -344,7 +344,7 @@ Uses the given XmlNodeReader to parse data for the defined parser instance.
             is_available = True
             timeout_time = (time() + self.timeout_retries)
 
-            self.parser.data = { }
+            self.parser.set_xml_tree({ }, True)
 
             while (is_available
                    and _XmlNodeReader.NodeType != XmlNodeType.Element
@@ -355,7 +355,7 @@ Uses the given XmlNodeReader to parse data for the defined parser instance.
             _XmlNodeReader.Close()
 
             if (type(monoxml_dict) is dict): is_available = self._update_parser_with_parsed_dict_walker(monoxml_dict)
-            if (is_available): _return = self.parser.get()
+            if (is_available): _return = self.parser.data
         #
 
         return _return

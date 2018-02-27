@@ -372,7 +372,7 @@ Parses a given XML string and return the result in the format set by
             parser_ptr.Parse(data, True)
 
             self._update_parser_with_result()
-            _return = self.parser.get()
+            _return = self.parser.data
         #
 
         return _return
@@ -391,7 +391,7 @@ the parser completed its work.
         _return = None
 
         if ((not self.parser_active) and type(self.parser_cache) is dict and len(self.parser_cache) > 0):
-            self.parser.data = { }
+            self.parser.set_xml_tree({ }, True)
 
             for node_key in self.parser_cache:
                 node_dict = self.parser_cache[node_key]

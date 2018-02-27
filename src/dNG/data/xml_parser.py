@@ -319,13 +319,13 @@ Adds a XML node with content - recursively if required.
                     if (isinstance(attributes, dict) and len(attributes) > 0):
                         if ("xmlns" in attributes):
                             if (len(attributes['xmlns']) > 0):
-                                if (attributes['xmlns'] in self.data_ns_default): node_dict['xmlns']['@'] = self.data_ns_default[attributes['xmlns']]
-                                else:
+                                if (attributes['xmlns'] not in self.data_ns_default):
                                     self.data_ns_counter += 1
                                     self.data_ns_default[attributes['xmlns']] = self.data_ns_counter
                                     self.data_ns_compact[self.data_ns_counter] = attributes['xmlns']
-                                    node_dict['xmlns']['@'] = self.data_ns_counter
                                 #
+
+                                node_dict['xmlns']['@'] = self.data_ns_default[attributes['xmlns']]
                             elif ("@" in node_dict['xmlns']): del(node_dict['xmlns']['@'])
                         #
 
@@ -611,7 +611,7 @@ tag will be saved as "tag_ns" and "tag_parsed".
             re_result = XmlParser.RE_NODE_NAME_XMLNS.match(node['tag'])
 
             if (re_result is not None and re_result.group(1) in node['xmlns'] and node['xmlns'][re_result.group(1)] in self.data_ns_compact):
-                tag_ns = XmlParser._search_dict(self.data_ns_compact[node['xmlns'][re_result.group(1)]] ,self.data_ns)
+                tag_ns = XmlParser._search_dict(self.data_ns_compact[node['xmlns'][re_result.group(1)]], self.data_ns)
 
                 if (tag_ns is not None):
                     _return['tag_ns'] = tag_ns
@@ -681,9 +681,9 @@ path.
         return _return
     #
 
-    def set_xml(self, data_dict, overwrite = False):
+    def set_xml_tree(self, data_dict, overwrite = False):
         """
-"Imports" Python representation data for this "XmlResource" instance.
+Sets the Python representation data of this "XmlResource" instance.
 
 :param data_dict: Python representation data
 :param overwrite: True to overwrite the current (non-empty) cache
@@ -692,7 +692,7 @@ path.
 :since:  v1.0.0
         """
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.set_xml()- (#echo(__LINE__)#)")
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.set_xml_tree()- (#echo(__LINE__)#)")
         _return = False
 
         if ((self._data is None or overwrite) and isinstance(data_dict, dict)):
