@@ -5,6 +5,7 @@ nbproject
 /_extras
 /build
 /dist
+/dng_xml*
 /make*.py*
 /MANIFEST
 /py_xml.*
