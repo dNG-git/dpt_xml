@@ -55,7 +55,7 @@ with TemporaryDirectory(dir = ".") as build_directory:
     makedirs(path.join(build_directory, "src", "dNG"))
 
     _setup = { "name": "dng-xml",
-               "version": get_version(),
+               "version": get_version()[1:],
                "description": "Multiple XML parsers: Common abstraction layer",
                "long_description": "XML.py should be used to parse and manipulate small XML resources in memory.",
                "author": "direct Netware Group et al.",
