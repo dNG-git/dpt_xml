@@ -56,10 +56,6 @@ Current node path of the parser
         """
 Current path as an array of node tags
         """
-        self.node_path_depth = 0
-        """
-Current depth
-        """
         self.parser_active = False
         """
 True if not the last element has been reached
@@ -139,7 +135,6 @@ Method to handle "end element" callbacks.
 
             del(self.parser_cache_link[self.node_path])
             self.node_path_list.pop()
-            self.node_path_depth -= 1
             self.node_path = " ".join(self.node_path_list)
 
             if ("value" not in self.parser_cache[node_path]): self.parser_cache[node_path]['value'] = ""
@@ -155,10 +150,7 @@ Method to handle "end element" callbacks.
                 del(self.parser_cache[node_path]['attributes']['value'])
             #
 
-            if (self.node_path_depth < 1):
-                self.node_path = ""
-                self.parser_active = False
-            #
+            self.parser_active = (self.node_path != "")
         #
     #
 
@@ -205,7 +197,6 @@ Method to handle "end element" callbacks. (Merged XML parser)
                        )
 
             self.node_path_list.pop()
-            self.node_path_depth -= 1
             self.node_path = "_".join(self.node_path_list)
 
             if ("xml:space" not in node_ptr['attributes']): node_ptr['value'] = node_ptr['value'].strip()
@@ -216,10 +207,7 @@ Method to handle "end element" callbacks. (Merged XML parser)
                 del(node_ptr['attributes']['value'])
             #
 
-            if (self.node_path_depth < 1):
-                self.node_path = ""
-                self.parser_active = False
-            #
+            self.parser_active = (self.node_path != "")
         #
     #
 
@@ -241,7 +229,6 @@ Method to handle "start element" callbacks. (Merged XML parser)
 
         if (not self.parser_active):
             self.node_path = ""
-            self.node_path_depth = 0
             self.parser_active = True
             self.parser_cache_link = { }
         #
@@ -252,7 +239,6 @@ Method to handle "start element" callbacks. (Merged XML parser)
         if (len(self.node_path) > 0): self.node_path += "_"
         self.node_path += name
         self.node_path_list.append(name)
-        self.node_path_depth += 1
 
         for key in attributes:
             if (str is not _PY_UNICODE_TYPE and type(key) is _PY_UNICODE_TYPE): key = _PY_STR(key, "utf-8")
@@ -271,7 +257,7 @@ Method to handle "start element" callbacks. (Merged XML parser)
             #
         #
 
-        node_dict = { "tag": name, "level": self.node_path_depth, "value": "", "attributes": attributes }
+        node_dict = { "tag": name, "value": "", "attributes": attributes }
 
         if (self.node_path in self.parser_cache):
             if ("tag" in self.parser_cache[self.node_path]): self.parser_cache[self.node_path] = [ self.parser_cache[self.node_path], node_dict ]
@@ -302,7 +288,6 @@ Method to handle "start element" callbacks.
 
         if (not self.parser_active):
             self.node_path = ""
-            self.node_path_depth = 0
             self.parser_active = True
             self.parser_cache_counter = 0
             self.parser_cache_link = { }
@@ -316,7 +301,6 @@ Method to handle "start element" callbacks.
         if (len(self.node_path) > 0): self.node_path += " "
         self.node_path += name
         self.node_path_list.append(name)
-        self.node_path_depth += 1
 
         for key in attributes:
             if (str is not _PY_UNICODE_TYPE and type(key) is _PY_UNICODE_TYPE): key = _PY_STR(key, "utf-8")
@@ -349,14 +333,9 @@ Parses a given XML string and return the result in the format set by
 :since:  v0.1.1
         """
 
-        # global: _PY_STR, _PY_UNICODE_TYPE
-
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse()- (#echo(__LINE__)#)".format(self))
 
-        if (re.search("<\\?xml(.+?)encoding=", data) is None):
-            parser_ptr = expat.ParserCreate("UTF-8")
-            if (str is not _PY_UNICODE_TYPE and type(data) is _PY_UNICODE_TYPE): data = _PY_STR(data, "utf-8")
-        else: parser_ptr = expat.ParserCreate()
+        parser_ptr = expat.ParserCreate()
 
         if (self.merged_mode):
             parser_ptr.CharacterDataHandler = self.handle_cdata_merged

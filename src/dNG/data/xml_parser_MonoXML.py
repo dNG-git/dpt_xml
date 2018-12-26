@@ -113,7 +113,7 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 
                     node_path_list.append(node_name)
                     node_path = "_".join(node_path_list)
-                    nodes_dict[node_path] = { "tag": node_name, "level": (1 + _XmlNodeReader.Depth), "value": None, "attributes": attributes_dict }
+                    nodes_dict[node_path] = { "tag": node_name, "value": None, "attributes": attributes_dict }
 
                     depth = _XmlNodeReader.Depth
                     is_read = True
@@ -191,7 +191,7 @@ algorithm.
 
         if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_parsed_dict_walker({0}, {1:d})- (#echo(__LINE__)#)".format(self, node_path, xml_level))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_parsed_dict_walker({1}, {2:d})- (#echo(__LINE__)#)".format(self, node_path, xml_level))
         _return = None
 
         if (hasattr(_XmlNodeReader,"Read")):

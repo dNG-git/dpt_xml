@@ -414,22 +414,17 @@ Read and convert a simple multi-dimensional dict into our XML tree.
         return _return
     #
 
-    def import_dict_walker(self, data_dict, xml_level = 1):
+    def import_dict_walker(self, data_dict):
         """
 Read and convert a single dimension of an dictionary for our XML tree.
 
 :param data_dict: Input dict
-:param xml_level: Current level of an multi-dimensional dict
 
 :return: (dict) Result XML tree dict
 :since:  v0.1.0
         """
 
-        # global: _PY_STR, _PY_UNICODE_TYPE
-
-        if (str is not _PY_UNICODE_TYPE and type(xml_level) is _PY_UNICODE_TYPE): xml_level = _PY_STR(xml_level, "utf-8")
-
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.import_dict_walker({0:d})- (#echo(__LINE__)#)".format(xml_level))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.import_dict_walker()- (#echo(__LINE__)#)")
         _return = { }
 
         if (isinstance(data_dict, dict)):
@@ -439,8 +434,8 @@ Read and convert a single dimension of an dictionary for our XML tree.
 
                 if (key_type in ( int, float ) or len(key) > 0):
                     if (isinstance(value, dict)):
-                        node_dict = self.node_type([ ( "xml.item", { "tag": key,"level": xml_level,"xmlns": { } } ) ])
-                        node_dict.update(self.import_dict_walker(value, (1 + xml_level)))
+                        node_dict = self.node_type([ ( "xml.item", { "tag": key, "xmlns": { } } ) ])
+                        node_dict.update(self.import_dict_walker(value))
                         _return[key] = node_dict
                     elif (isinstance(value, list)): _return[key] = self.node_type(tag = key, value = value, xmlns = { })
                 #
