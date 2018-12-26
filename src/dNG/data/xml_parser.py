@@ -22,6 +22,9 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 from weakref import proxy, ProxyTypes
 import re
 
+try: from collections.abc import Mapping
+except ImportError: from collections import Mapping
+
 try: from html import escape as html_escape
 except ImportError:
     from cgi import escape as html_escape
@@ -88,6 +91,10 @@ RegExp to split XML namespace node names
     RE_NODE_POSITION = re.compile("^(.+)\\#(\\d+)$")
     """
 RegExp to find node names with a specified position in a list
+    """
+    RE_NODE_POSITIONS = re.compile("\\#(\\d+)(\W|$)")
+    """
+RegExp to find the first specified position for node names
     """
     RE_TAG_DIGIT = re.compile("^\\d")
     """
@@ -225,22 +232,28 @@ Adds a XML node with content - recursively if required.
 
         # global: _PY_STR, _PY_UNICODE_TYPE
 
-        if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
+        if (str is not _PY_UNICODE_TYPE):
+            if (type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
+            if (type(value) is _PY_UNICODE_TYPE): value = _PY_STR(value, "utf-8")
+        #
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.add_node({0})- (#echo(__LINE__)#)".format(node_path))
         _return = False
 
         if (self._data is None): self._data = self.node_type()
 
-        if (type(node_path) == str and (not isinstance(value, dict)) and (not isinstance(value, list))):
+        if (type(node_path) == str):
             node_path = self._translate_ns_path(node_path)
 
-            if (self.data_cache_node == "" or re.match("^{0}".format(re.escape(node_path)), self.data_cache_node,re.I) is None):
+            if (self.data_cache_node == ""
+                or re.match("^{0}(\W|$)".format(re.escape(self.data_cache_node)), node_path, re.I) is None
+                or ("xml.item" not in self.data_cache_ptr and "xml.mtree" not in self.data_cache_ptr)
+               ):
                 node_path_done = ""
                 node_ptr = self._data
             else:
                 node_path = node_path[len(self.data_cache_node):].strip()
-                node_path_done = self.data_cache_node
+                node_path_done = XmlParser.RE_NODE_POSITIONS.sub("\\2", self.data_cache_node)
                 node_ptr = self.data_cache_ptr
             #
 
@@ -260,54 +273,52 @@ Adds a XML node with content - recursively if required.
 
                 if (len(nodes_list) > 0):
                     if (node_name in node_ptr):
+                        is_available = True
+
                         if ("xml.mtree" in node_ptr[node_name]):
+                            mtree_node = node_ptr[node_name]
+
                             if (node_position >= 0):
-                                if (node_position in node_ptr[node_name]):
-                                    is_available = True
-                                    _return = True
-                                #
-                            elif (node_ptr[node_name]['xml.mtree'] in node_ptr[node_name]):
-                                is_available = True
-                                node_position = node_ptr[node_name]['xml.mtree']
+                                if (node_position in mtree_node): _return = True
+                            elif (mtree_node['xml.mtree'] in mtree_node):
+                                node_position = mtree_node['xml.mtree']
                                 _return = True
-                            #
+                            else: is_available = False
 
                             if (is_available):
-                                if ((not isinstance(node_ptr[node_name][node_position], dict))
-                                    or "xml.item" not in node_ptr[node_name][node_position]
-                                   ): node_ptr[node_name][node_position] = { "xml.item": node_ptr[node_name][node_position] }
+                                if ((not isinstance(mtree_node[node_position], Mapping))
+                                    or "xml.item" not in mtree_node[node_position]
+                                   ): mtree_node[node_position] = self._convert_leaf_to_node(mtree_node[node_position])
 
-                                node_ptr = node_ptr[node_name][node_position]
+                                node_ptr = mtree_node[node_position]
                             #
-                        elif ("xml.item" in node_ptr[node_name]):
-                            is_available = True
-                            node_ptr = node_ptr[node_name]
+                        elif ("xml.item" in node_ptr[node_name]): node_ptr = node_ptr[node_name]
                         else:
-                            is_available = True
-                            self._convert_leaf_to_node(node_ptr, node_path_done, node_name)
+                            node_ptr[node_name] = self._convert_leaf_to_node(node_ptr[node_name])
                             node_ptr = node_ptr[node_name]
                         #
                     #
 
                     if ((not is_available) and add_recursively):
                         node_dict = self.node_type(tag = node_name,
-                                                   level = 1,
+                                                   value = '',
                                                    attributes = { },
                                                    xmlns = { }
                                                   )
 
-                        if ("xml.item" in node_ptr):
-                            if ("level" in node_ptr['xml.item']): node_dict['level'] = (1 + node_ptr['xml.item']['level'])
-                            if ("xmlns" in node_ptr['xml.item']): node_dict['xmlns'] = node_ptr['xml.item']['xmlns'].copy()
+                        if ("xml.item" in node_ptr and "xmlns" in node_ptr['xml.item']):
+                            node_dict['xmlns'] = node_ptr['xml.item']['xmlns'].copy()
                         #
 
                         self._add_node_ns_cache(node_path_done, node_name, node_dict)
 
                         is_available = True
-                        node_ptr[node_name] = self.node_type([ ( "xml.item", node_dict ) ])
+                        node_ptr[node_name] = self._convert_leaf_to_node(node_dict)
                         node_ptr = node_ptr[node_name]
                     #
                 else:
+                    if (type(value) is not str): value = str(value)
+
                     node_dict = self.node_type(tag = node_name,
                                                value = value,
                                                attributes = { },
@@ -316,7 +327,7 @@ Adds a XML node with content - recursively if required.
 
                     if ("xml.item" in node_ptr and "xmlns" in node_ptr['xml.item']): node_dict['xmlns'] = node_ptr['xml.item']['xmlns'].copy()
 
-                    if (isinstance(attributes, dict) and len(attributes) > 0):
+                    if (isinstance(attributes, Mapping) and len(attributes) > 0):
                         if ("xmlns" in attributes):
                             if (len(attributes['xmlns']) > 0):
                                 if (attributes['xmlns'] not in self.data_ns_default):
@@ -344,10 +355,11 @@ Adds a XML node with content - recursively if required.
                         node_dict['attributes'] = attributes
                     #
 
-                    self._add_node_ns_cache(node_path_done, node_name, node_dict)
-
                     if (node_name in node_ptr):
-                        if ((not isinstance(node_ptr[node_name], dict)) or "xml.mtree" not in node_ptr[node_name]):
+                        if (not isinstance(node_ptr[node_name], Mapping)):
+                            node_dict[node_name] = node_ptr[node_name]
+                            node_ptr[node_name] = node_dict
+                        elif ("xml.mtree" not in node_ptr[node_name]):
                             node_ptr[node_name] = self.node_type([ ( 0, node_ptr[node_name] ), ( 1, node_dict ) ])
                             node_ptr[node_name]['xml.mtree'] = 1
                         else:
@@ -355,6 +367,8 @@ Adds a XML node with content - recursively if required.
                             node_ptr[node_name][node_ptr[node_name]['xml.mtree']] = node_dict
                         #
                     else: node_ptr[node_name] = node_dict
+
+                    self._add_node_ns_cache(node_path_done, node_name, node_dict)
 
                     _return = True
                 #
@@ -402,29 +416,17 @@ Caches XML namespace data for the given XML node.
         #
     #
 
-    def _convert_leaf_to_node(self, node_ptr, node_path_done, node_name):
+    def _convert_leaf_to_node(self, node_ptr):
         """
 Convert an XML leaf to a node.
 
-:param node_ptr: Parent XML node pointer
-:param node_path_done: XML node path containing the given XML node
-:param node_name: XML leaf name to be converted to a node
+:param node_ptr: XML leaf pointer
 
-:since: v0.1.0
+:return: XML node dict
+:since:  v0.1.0
         """
 
-        node_ptr[node_name]['level'] = ((1 + node_ptr['xml.item']['level'])
-                                        if ("level" in node_ptr.get("xml.item", { })) else
-                                        1
-                                       )
-
-        node_ptr[node_name] = self.node_type([ ( "xml.item", node_ptr[node_name] ) ])
-        node_ptr = node_ptr[node_name]
-
-        if (self.data_cache_node != ""):
-            node_path_changed = ("{0} {1}".format(node_path_done, node_name) if (len(node_path_done) > 0) else node_name)
-            if (self.data_cache_node == node_path_changed): self.data_cache_ptr = node_ptr
-        #
+        return self.node_type([ ( "xml.item", node_ptr ) ])
     #
 
     def dict_to_xml(self, xml_tree, strict_standard_mode = True):
@@ -441,7 +443,7 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.dict_to_xml()- (#echo(__LINE__)#)")
         _return = ""
 
-        if (isinstance(xml_tree, dict) and len(xml_tree) > 0):
+        if (isinstance(xml_tree, Mapping) and len(xml_tree) > 0):
             for xml_node in xml_tree:
                 xml_node_dict = xml_tree[xml_node]
 
@@ -481,7 +483,7 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 
         _return = ""
 
-        if (isinstance(data, dict)):
+        if (isinstance(data, Mapping)):
             if (len(data['tag']) > 0):
                 if (re.match("\\d", data['tag']) is not None): data['tag'] = "digitstart__{0}".format(data['tag'])
                 _return += "<{0}".format(data['tag'])
@@ -604,7 +606,7 @@ tag will be saved as "tag_ns" and "tag_parsed".
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.translate_ns()- (#echo(__LINE__)#)")
         _return = node
 
-        if (isinstance(node, dict) and "tag" in node and isinstance(node.get("xmlns"), dict)):
+        if (isinstance(node, Mapping) and "tag" in node and isinstance(node.get("xmlns"), Mapping)):
             _return['tag_ns'] = ""
             _return['tag_parsed'] = node['tag']
 
@@ -695,7 +697,7 @@ Sets the Python representation data of this "XmlResource" instance.
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.set_xml_tree()- (#echo(__LINE__)#)")
         _return = False
 
-        if ((self._data is None or overwrite) and isinstance(data_dict, dict)):
+        if ((self._data is None or overwrite) and isinstance(data_dict, Mapping)):
             self._data = data_dict
             _return = True
         #
