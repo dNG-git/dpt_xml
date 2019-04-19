@@ -1,11 +1,11 @@
 ----------------------------------------------------------------------------
-XML.py
-Multiple XML parsers: Common abstraction layer
+direct Python Toolbox
+All-in-one toolbox to encapsulate Python runtime variants
 ----------------------------------------------------------------------------
 
-XML.py should be used to parse and manipulate small XML resources in memory.
-It uses different parsers transparently based on the Python interpreter in
-use.
+"dpt-xml" should be used to parse and manipulate small XML resources in
+memory. It uses different parsers transparently based on the Python
+interpreter in use.
 
 ----------------------------------------------------------------------------
 Licensing

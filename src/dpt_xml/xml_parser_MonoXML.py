@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 """
-XML.py
-Multiple XML parsers: Common abstraction layer
+direct Python Toolbox
+All-in-one toolbox to encapsulate Python runtime variants
 ----------------------------------------------------------------------------
 (C) direct Netware Group - All rights reserved
-https://www.direct-netware.de/redirect?py;xml
+https://www.direct-netware.de/redirect?dpt;xml
 
 This Source Code Form is subject to the terms of the Mozilla Public License,
 v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -13,7 +13,7 @@ obtain one at http://mozilla.org/MPL/2.0/.
 ----------------------------------------------------------------------------
 https://www.direct-netware.de/redirect?licenses;mpl2
 ----------------------------------------------------------------------------
-#echo(pyXmlVersion)#
+#echo(dptXmlVersion)#
 #echo(__FILEPATH__)#
 """
 
@@ -31,12 +31,13 @@ class XmlParserMonoXml(AbstractXmlParser):
     """
 This implementation supports XmlNodeReader for XML parsing.
 
-:author:    direct Netware Group
-:copyright: direct Netware Group - All rights reserved
-:package:   XML.py
-:since:     v0.1.0
-:license:   https://www.direct-netware.de/redirect?licenses;mpl2
-            Mozilla Public License, v. 2.0
+:author:     direct Netware Group
+:copyright:  direct Netware Group - All rights reserved
+:package:    dpt
+:subpackage: xml
+:since:      v1.0.0
+:license:    https://www.direct-netware.de/redirect?licenses;mpl2
+             Mozilla Public License, v. 2.0
     """
 
     def __init__(self, parser, timeout_retries = 5, log_handler = None):
@@ -48,7 +49,7 @@ Constructor __init__(XmlParserMonoXml)
 :param timeout_retries: Retries before timing out
 :param log_handler: Log handler to use
 
-:since: v0.1.0
+:since: v1.0.0
         """
 
         AbstractXmlParser.__init__(self, parser, log_handler)
@@ -66,7 +67,7 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 :param _XmlNodeReader: XmlNodeReader object
 
 :return: (dict) Merged XML tree; None on error
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -184,7 +185,7 @@ algorithm.
 :param xml_level: Current XML depth
 
 :return: (dict) XML tree node; None on error
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -265,11 +266,11 @@ algorithm.
 
     def parse(self, data):
         """
-Parses a given XML string and return the result in the format set by
-"set_mode()" and "set_strict_standard()".
+Parses a given XML string and return the result in the format set by "mode"
+and "strict_standard_mode".
 
 :return: (dict) Multi-dimensional or merged XML tree; None on error
-:since:  v0.1.1
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -286,7 +287,7 @@ Parses a given XML string and return the result in the format set by
 
         if (parser_ptr is not None):
             _return = (self._get_merged_result(parser_ptr)
-                       if (self.merged_mode) else
+                       if (self._merged_mode) else
                        self._update_parser_with_result(parser_ptr)
                       )
         #
@@ -301,7 +302,7 @@ Imports a pre-parsed XML dict into the given parser instance.
 :param data_dict: Result dict of a "_get_parsed_dict_walker()"
 
 :return: (bool) True on success
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_parsed_dict_walker()- (#echo(__LINE__)#)".format(self))
@@ -334,7 +335,7 @@ Uses the given XmlNodeReader to parse data for the defined parser instance.
 :param _XmlNodeReader: XmlNodeReader object
 
 :return: (dict) Multi-dimensional XML tree
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)".format(self))

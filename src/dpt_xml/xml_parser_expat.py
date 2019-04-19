@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 """
-XML.py
-Multiple XML parsers: Common abstraction layer
+direct Python Toolbox
+All-in-one toolbox to encapsulate Python runtime variants
 ----------------------------------------------------------------------------
 (C) direct Netware Group - All rights reserved
-https://www.direct-netware.de/redirect?py;xml
+https://www.direct-netware.de/redirect?dpt;xml
 
 This Source Code Form is subject to the terms of the Mozilla Public License,
 v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -13,7 +13,7 @@ obtain one at http://mozilla.org/MPL/2.0/.
 ----------------------------------------------------------------------------
 https://www.direct-netware.de/redirect?licenses;mpl2
 ----------------------------------------------------------------------------
-#echo(pyXmlVersion)#
+#echo(dptXmlVersion)#
 #echo(__FILEPATH__)#
 """
 
@@ -28,12 +28,13 @@ class XmlParserExpat(AbstractXmlParser):
     """
 This implementation supports expat for XML parsing.
 
-:author:    direct Netware Group
-:copyright: direct Netware Group - All rights reserved
-:package:   XML.py
-:since:     v0.1.0
-:license:   https://www.direct-netware.de/redirect?licenses;mpl2
-            Mozilla Public License, v. 2.0
+:author:     direct Netware Group
+:copyright:  direct Netware Group - All rights reserved
+:package:    dpt
+:subpackage: xml
+:since:      v1.0.0
+:license:    https://www.direct-netware.de/redirect?licenses;mpl2
+             Mozilla Public License, v. 2.0
     """
 
     def __init__(self, parser, log_handler = None):
@@ -43,7 +44,7 @@ Constructor __init__(XmlParserExpat)
 :param parser: Container for the XML document
 :param log_handler: Log handler to use
 
-:since: v0.1.0
+:since: v1.0.0
         """
 
         AbstractXmlParser.__init__(self, parser, log_handler)
@@ -80,7 +81,7 @@ Returns the merged result of an expat parsing operation if the parser
 completed its work.
 
 :return: (dict) Merged XML tree; None on error
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result()- (#echo(__LINE__)#)".format(self))
@@ -104,7 +105,7 @@ required information.
 
 :param data: Character data
 
-:since: v0.1.0
+:since: v1.0.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata()- (#echo(__LINE__)#)".format(self))
@@ -121,7 +122,7 @@ Method to handle "end element" callbacks.
 
 :param name: XML tag
 
-:since: v0.1.0
+:since: v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -164,7 +165,7 @@ required information. (Merged XML parser)
 
 :param data: Character data
 
-:since: v0.1.0
+:since: v1.0.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata_merged()- (#echo(__LINE__)#)".format(self))
@@ -181,7 +182,7 @@ Method to handle "end element" callbacks. (Merged XML parser)
 
 :param name: XML tag
 
-:since: v0.1.0
+:since: v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -218,7 +219,7 @@ Method to handle "start element" callbacks. (Merged XML parser)
 :param name: XML tag
 :param attributes: Node attributes
 
-:since: v0.1.0
+:since: v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -277,7 +278,7 @@ Method to handle "start element" callbacks.
 :param name: XML tag
 :param attributes: Node attributes
 
-:since: v0.1.0
+:since: v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -326,18 +327,18 @@ Method to handle "start element" callbacks.
 
     def parse(self, data):
         """
-Parses a given XML string and return the result in the format set by
-"set_mode()" and "set_strict_standard()".
+Parses a given XML string and return the result in the format set by "mode"
+and "strict_standard_mode".
 
 :return: (dict) Multi-dimensional or merged XML tree; None on error
-:since:  v0.1.1
+:since:  v1.0.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse()- (#echo(__LINE__)#)".format(self))
 
         parser_ptr = expat.ParserCreate()
 
-        if (self.merged_mode):
+        if (self._merged_mode):
             parser_ptr.CharacterDataHandler = self.handle_cdata_merged
             parser_ptr.StartElementHandler = self.handle_element_start_merged
             parser_ptr.EndElementHandler = self.handle_element_end_merged
@@ -363,7 +364,7 @@ Adds the result of an expat parsing operation to the defined XML instance if
 the parser completed its work.
 
 :return: (dict) Multi-dimensional XML tree; None on error
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)".format(self))

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 """
-XML.py
-Multiple XML parsers: Common abstraction layer
+direct Python Toolbox
+All-in-one toolbox to encapsulate Python runtime variants
 ----------------------------------------------------------------------------
 (C) direct Netware Group - All rights reserved
-https://www.direct-netware.de/redirect?py;xml
+https://www.direct-netware.de/redirect?dpt;xml
 
 This Source Code Form is subject to the terms of the Mozilla Public License,
 v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -13,7 +13,7 @@ obtain one at http://mozilla.org/MPL/2.0/.
 ----------------------------------------------------------------------------
 https://www.direct-netware.de/redirect?licenses;mpl2
 ----------------------------------------------------------------------------
-#echo(pyXmlVersion)#
+#echo(dptXmlVersion)#
 #echo(__FILEPATH__)#
 """
 
@@ -34,12 +34,13 @@ class XmlResource(XmlParser):
 This class extends the bridge between Python and XML to work with XML and
 create valid documents.
 
-:author:    direct Netware Group
-:copyright: direct Netware Group - All rights reserved
-:package:   XML.py
-:since:     v0.1.0
-:license:   https://www.direct-netware.de/redirect?licenses;mpl2
-            Mozilla Public License, v. 2.0
+:author:     direct Netware Group
+:copyright:  direct Netware Group - All rights reserved
+:package:    dpt
+:subpackage: xml
+:since:      v1.0.0
+:license:    https://www.direct-netware.de/redirect?licenses;mpl2
+             Mozilla Public License, v. 2.0
     """
 
     def __init__(self, xml_charset = "UTF-8", node_type = dict, timeout_retries = 5, log_handler = None):
@@ -51,7 +52,7 @@ Constructor __init__(XmlResource)
 :param timeout_retries: Retries before timing out
 :param log_handler: Log handler to use
 
-:since: v0.1.0
+:since: v1.0.0
         """
 
         XmlParser.__init__(self, xml_charset, node_type, timeout_retries, log_handler)
@@ -91,7 +92,7 @@ handled by the calling code.
 :param attributes: Attributes of the node
 
 :return: (bool) False on error
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -124,7 +125,7 @@ Change the value of a specified node.
 :param value: Value for the new node
 
 :return: (bool) False on error
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -156,7 +157,7 @@ Count the occurrence of a specified node.
 :param node_path: Path to the node; delimiter is space
 
 :return: (int) Counted number off matching nodes
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -225,7 +226,7 @@ Read a specified node including all children if applicable.
 :param remove_metadata: False to not remove the xml.item node
 
 :return: (dict) XML node element; None on error
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -255,7 +256,7 @@ Returns the attributes of a specified node.
 :param node_path: Path to the node; delimiter is space
 
 :return: (str) Attributes for the node; None if undefined
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -282,7 +283,7 @@ Returns the pointer to a specific node.
 :param node_path: Path to the node - delimiter is space
 
 :return: (dict) XML node element; False on error
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -345,7 +346,7 @@ Returns the value of a specified node.
 :param node_path: Path to the node; delimiter is space
 
 :return: (str) Value for the node; None if undefined
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -373,7 +374,7 @@ containing the registered XML NS.
 :param data: XML NS or node name
 
 :return: (str) Namespace (URI)
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -400,7 +401,7 @@ Read and convert a simple multi-dimensional dict into our XML tree.
 :param overwrite: True to overwrite the current (non-empty) cache
 
 :return: (bool) True on success
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.import_dict()- (#echo(__LINE__)#)")
@@ -421,7 +422,7 @@ Read and convert a single dimension of an dictionary for our XML tree.
 :param data_dict: Input dict
 
 :return: (dict) Result XML tree dict
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.import_dict_walker()- (#echo(__LINE__)#)")
@@ -452,7 +453,7 @@ Remove a node and all children if applicable.
 :param node_path: Path to the node - delimiter is space
 
 :return: (bool) False on error
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -550,7 +551,7 @@ Removes cached XML namespace data of the given XML node.
 
 :param node_path: XML node path
 
-:since: v0.1.0
+:since: v1.0.0
         """
 
         if (node_path in self.data_ns_predefined_compact):
@@ -566,7 +567,7 @@ Set the cache pointer to a specific node.
 :param node_path: Path to the node - delimiter is space
 
 :return: (bool) True on success
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -603,7 +604,7 @@ node.
 :param name: Requested node name
 
 :return: (str) Translated node name
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         _return = name

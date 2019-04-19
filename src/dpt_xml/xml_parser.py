@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 """
-XML.py
-Multiple XML parsers: Common abstraction layer
+direct Python Toolbox
+All-in-one toolbox to encapsulate Python runtime variants
 ----------------------------------------------------------------------------
 (C) direct Netware Group - All rights reserved
-https://www.direct-netware.de/redirect?py;xml
+https://www.direct-netware.de/redirect?dpt;xml
 
 This Source Code Form is subject to the terms of the Mozilla Public License,
 v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -13,7 +13,7 @@ obtain one at http://mozilla.org/MPL/2.0/.
 ----------------------------------------------------------------------------
 https://www.direct-netware.de/redirect?licenses;mpl2
 ----------------------------------------------------------------------------
-#echo(pyXmlVersion)#
+#echo(dptXmlVersion)#
 #echo(__FILEPATH__)#
 """
 
@@ -72,12 +72,13 @@ class XmlParser(object):
     """
 This class provides a bridge between Python and XML to read XML on the fly.
 
-:author:    direct Netware Group
-:copyright: direct Netware Group - All rights reserved
-:package:   XML.py
-:since:     v0.1.0
-:license:   https://www.direct-netware.de/redirect?licenses;mpl2
-            Mozilla Public License, v. 2.0
+:author:     direct Netware Group
+:copyright:  direct Netware Group - All rights reserved
+:package:    dpt
+:subpackage: xml
+:since:      v1.0.0
+:license:    https://www.direct-netware.de/redirect?licenses;mpl2
+             Mozilla Public License, v. 2.0
     """
 
     RE_ATTRIBUTES_XMLNS = re.compile("xmlns\\:", re.I)
@@ -111,7 +112,7 @@ Constructor __init__(XmlParser)
 :param timeout_retries: Retries before timing out
 :param log_handler: Log handler to use
 
-:since: v0.1.0
+:since: v1.0.0
         """
 
         # global: _IMPLEMENTATION_MONO, _mode
@@ -195,9 +196,9 @@ Return the Python representation data of this "XmlParser" instance.
     @property
     def log_handler(self):
         """
-Returns the LogHandler.
+Returns the log handler.
 
-:return: (object) LogHandler in use
+:return: (object) Log handler in use
 :since:  v1.0.0
         """
 
@@ -207,9 +208,9 @@ Returns the LogHandler.
     @log_handler.setter
     def log_handler(self, log_handler):
         """
-Sets the LogHandler.
+Sets the log handler.
 
-:param log_handler: LogHandler to use
+:param log_handler: Log handler to use
 
 :since: v1.0.0
         """
@@ -227,7 +228,7 @@ Adds a XML node with content - recursively if required.
 :param add_recursively: True to create the required tree recursively
 
 :return: (bool) False on error
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -389,7 +390,7 @@ Caches XML namespace data for the given XML node.
 :param node_name: XML node name
 :param node_dict: XML node
 
-:since: v0.1.0
+:since: v1.0.0
         """
 
         node_ns_name = ""
@@ -423,7 +424,7 @@ Convert an XML leaf to a node.
 :param node_ptr: XML leaf pointer
 
 :return: XML node dict
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         return self.node_type([ ( "xml.item", node_ptr ) ])
@@ -437,7 +438,7 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 :param strict_standard_mode: Be standard conform
 
 :return: (str) XML output string
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.dict_to_xml()- (#echo(__LINE__)#)")
@@ -476,7 +477,7 @@ Builds recursively a valid XML ouput reflecting the given XML dict tree.
 :param strict_standard_mode: Be standard conform
 
 :return: (str) XML output string
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -551,7 +552,7 @@ Parses the given XML data.
 :param data: Input XML data
 :param strict_standard_mode: True to be standard compliant
 
-:since: v0.1.2
+:since: v1.0.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.parse()- (#echo(__LINE__)#)")
@@ -560,8 +561,8 @@ Parses the given XML data.
         self.data_cache_node = ""
         self.data_cache_ptr = None
 
-        self.parser_instance.set_mode(AbstractXmlParser.MODE_TREE)
-        self.parser_instance.set_strict_standard(strict_standard_mode)
+        self.parser_instance.mode = AbstractXmlParser.MODE_TREE
+        self.parser_instance.strict_standard_mode = strict_standard_mode
         self.parser_instance.parse(data)
     #
 
@@ -572,7 +573,7 @@ Registers a namespace (URI) for later use with this XML reader instance.
 :param ns: Output relevant namespace definition
 :param uri: Uniform Resource Identifier
 
-:since: v0.1.0
+:since: v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -600,7 +601,7 @@ tag will be saved as "tag_ns" and "tag_parsed".
 :param node: XML tree node
 
 :return: (dict) Checked XML tree node
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.translate_ns()- (#echo(__LINE__)#)")
@@ -648,7 +649,7 @@ path.
 :param node_path: Path to the new node; delimiter is space
 
 :return: (str) Output node path
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -711,7 +712,7 @@ Uses or disables CDATA nodes to encode embedded XML.
 
 :param use_cdata: Use CDATA nodes
 
-:since: v0.1.0
+:since: v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -731,7 +732,7 @@ Unregisters a namespace or clears the cache (if ns is empty).
 
 :param ns: Output relevant namespace definition
 
-:since: v0.1.0
+:since: v1.0.0
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
@@ -773,7 +774,7 @@ Converts XML data into a merged XML dictionary.
         _return = None
 
         try:
-            self.parser_instance.set_mode(AbstractXmlParser.MODE_MERGED)
+            self.parser_instance.mode = AbstractXmlParser.MODE_MERGED
             _return = self.parser_instance.parse(data)
         except Exception: pass
 
@@ -789,7 +790,7 @@ Searches haystack for needle.
 :param haystack: Dict to search in
 
 :return: (mixed) Key; None on error
-:since:  v0.1.0
+:since:  v1.0.0
         """
 
         _return = None
