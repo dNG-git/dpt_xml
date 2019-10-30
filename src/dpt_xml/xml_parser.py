@@ -103,6 +103,27 @@ RegExp to find node names starting with a number (and are not standard
 compliant)
     """
 
+    __slots__ = [ "__weakref__",
+                  "_data",
+                  "data_cache_node",
+                  "data_cache_ptr",
+                  "data_charset",
+                  "data_cdata_encoding",
+                  "data_ns",
+                  "data_ns_compact",
+                  "data_ns_counter",
+                  "data_ns_default",
+                  "data_ns_predefined_compact",
+                  "data_ns_predefined_default",
+                  "_log_handler",
+                  "node_type",
+                  "parser_instance"
+                ]
+    """
+python.org: __slots__ reserves space for the declared variables and prevents
+the automatic creation of __dict__ and __weakref__ for each instance.
+    """
+
     def __init__(self, xml_charset = "UTF-8", node_type = dict, timeout_retries = 5, log_handler = None):
         """
 Constructor __init__(XmlParser)

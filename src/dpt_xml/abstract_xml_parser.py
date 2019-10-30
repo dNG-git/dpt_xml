@@ -54,6 +54,12 @@ Non standard compliant merged parser mode
 Tree parsing mode
     """
 
+    __slots__ = [ "_log_handler", "_merged_mode", "parser", "_strict_mode" ]
+    """
+python.org: __slots__ reserves space for the declared variables and prevents
+the automatic creation of __dict__ and __weakref__ for each instance.
+    """
+
     def __init__(self, parser, log_handler = None):
         """
 Constructor __init__(XmlParserExpat)
