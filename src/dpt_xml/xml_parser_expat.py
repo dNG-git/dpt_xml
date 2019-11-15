@@ -96,7 +96,7 @@ completed its work.
 :since:  v1.0.0
         """
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result()- (#echo(__LINE__)#)", self)
         _return = None
 
         if ((not self.parser_active) and type(self.parser_cache) is dict and len(self.parser_cache) > 0):
@@ -120,7 +120,7 @@ required information.
 :since: v1.0.0
         """
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata()- (#echo(__LINE__)#)", self)
 
         if (self.parser_active):
             if ("value" in self.parser_cache[self.parser_cache_link[self.node_path]]): self.parser_cache[self.parser_cache_link[self.node_path]]['value'] += data
@@ -141,7 +141,7 @@ Method to handle "end element" callbacks.
 
         if (str is not _PY_UNICODE_TYPE and type(name) is _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end({1})- (#echo(__LINE__)#)".format(self, name))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end({1})- (#echo(__LINE__)#)", self, name)
 
         if (self.parser_active):
             node_path = self.parser_cache_link[self.node_path]
@@ -180,7 +180,7 @@ required information. (Merged XML parser)
 :since: v1.0.0
         """
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata_merged()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_cdata_merged()- (#echo(__LINE__)#)", self)
 
         if (self.parser_active):
             if (self.parser_cache_link[self.node_path] > 0): self.parser_cache[self.node_path][self.parser_cache_link[self.node_path]]['value'] += data
@@ -201,7 +201,7 @@ Method to handle "end element" callbacks. (Merged XML parser)
 
         if (str is not _PY_UNICODE_TYPE and type(name) is _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end_merged({1})- (#echo(__LINE__)#)".format(self, name))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_end_merged({1})- (#echo(__LINE__)#)", self, name)
 
         if (self.parser_active):
             node_ptr = (self.parser_cache[self.node_path][self.parser_cache_link[self.node_path]]
@@ -238,7 +238,7 @@ Method to handle "start element" callbacks. (Merged XML parser)
 
         if (str is not _PY_UNICODE_TYPE and type(name) is _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start_merged({1})- (#echo(__LINE__)#)".format(self, name))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start_merged({1})- (#echo(__LINE__)#)", self, name)
 
         if (not self.parser_active):
             self.node_path = ""
@@ -297,7 +297,7 @@ Method to handle "start element" callbacks.
 
         if (str is not _PY_UNICODE_TYPE and type(name) is _PY_UNICODE_TYPE): name = _PY_STR(name, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start({1})- (#echo(__LINE__)#)".format(self, name))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.handle_element_start({1})- (#echo(__LINE__)#)", self, name)
 
         if (not self.parser_active):
             self.node_path = ""
@@ -346,7 +346,7 @@ and "strict_standard_mode".
 :since:  v1.0.0
         """
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse()- (#echo(__LINE__)#)", self)
 
         parser_ptr = expat.ParserCreate()
 
@@ -379,7 +379,7 @@ the parser completed its work.
 :since:  v1.0.0
         """
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)", self)
         _return = None
 
         if ((not self.parser_active) and type(self.parser_cache) is dict and len(self.parser_cache) > 0):

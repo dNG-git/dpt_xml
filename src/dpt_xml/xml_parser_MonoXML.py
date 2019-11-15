@@ -78,7 +78,7 @@ Uses the given XmlNodeReader to parse data as a merged tree.
 
         # global: _PY_STR, _PY_UNICODE_TYPE
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_merged_result()- (#echo(__LINE__)#)", self)
 
         if (hasattr(_XmlNodeReader, "Read")):
             _return = { }
@@ -198,7 +198,7 @@ algorithm.
 
         if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_parsed_dict_walker({1}, {2:d})- (#echo(__LINE__)#)".format(self, node_path, xml_level))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._get_parsed_dict_walker({1}, {2:d})- (#echo(__LINE__)#)", self, node_path, xml_level)
         _return = None
 
         if (hasattr(_XmlNodeReader,"Read")):
@@ -281,7 +281,7 @@ and "strict_standard_mode".
 
         # global: _PY_STR, _PY_UNICODE_TYPE
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.parse()- (#echo(__LINE__)#)", self)
 
         _return = None
 
@@ -311,7 +311,7 @@ Imports a pre-parsed XML dict into the given parser instance.
 :since:  v1.0.0
         """
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_parsed_dict_walker()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_parsed_dict_walker()- (#echo(__LINE__)#)", self)
         _return = False
 
         if (type(data_dict) is dict):
@@ -344,7 +344,7 @@ Uses the given XmlNodeReader to parse data for the defined parser instance.
 :since:  v1.0.0
         """
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)".format(self))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._update_parser_with_result()- (#echo(__LINE__)#)", self)
         _return = { }
 
         if (hasattr(_XmlNodeReader, "Read")):

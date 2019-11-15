@@ -105,7 +105,7 @@ handled by the calling code.
 
         if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.change_node_attributes({0})- (#echo(__LINE__)#)".format(node_path))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.change_node_attributes({0})- (#echo(__LINE__)#)", node_path)
         _return = False
 
         if (type(node_path) is str and isinstance(attributes, dict)):
@@ -138,7 +138,7 @@ Change the value of a specified node.
 
         if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.change_node_value({0})- (#echo(__LINE__)#)".format(node_path))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.change_node_value({0})- (#echo(__LINE__)#)", node_path)
         _return = False
 
         if (type(node_path) is str and (not isinstance(value, dict)) and (not isinstance(value, list))):
@@ -170,7 +170,7 @@ Count the occurrence of a specified node.
 
         if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.count_node({0})- (#echo(__LINE__)#)".format(node_path))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.count_node({0})- (#echo(__LINE__)#)", node_path)
         _return = 0
 
         if (type(node_path) is str):
@@ -239,7 +239,7 @@ Read a specified node including all children if applicable.
 
         if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.get_node({0})- (#echo(__LINE__)#)".format(node_path))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.get_node({0})- (#echo(__LINE__)#)", node_path)
         _return = None
 
         if (type(node_path) is str):
@@ -269,7 +269,7 @@ Returns the attributes of a specified node.
 
         if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.get_node_attributes({0})- (#echo(__LINE__)#)".format(node_path))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.get_node_attributes({0})- (#echo(__LINE__)#)", node_path)
         _return = None
 
         if (type(node_path) is str):
@@ -296,7 +296,7 @@ Returns the pointer to a specific node.
 
         if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml._get_node_ptr({0})- (#echo(__LINE__)#)".format(node_path))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml._get_node_ptr({0})- (#echo(__LINE__)#)", node_path)
         _return = None
 
         if (type(node_path) is str):
@@ -359,7 +359,7 @@ Returns the value of a specified node.
 
         if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.get_node_value({0})- (#echo(__LINE__)#)".format(node_path))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.get_node_value({0})- (#echo(__LINE__)#)", node_path)
         _return = None
 
         if (type(node_path) is str):
@@ -387,7 +387,7 @@ containing the registered XML NS.
 
         if (str is not _PY_UNICODE_TYPE and type(data) is _PY_UNICODE_TYPE): data = _PY_STR(data, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.get_ns_uri({0})- (#echo(__LINE__)#)".format(data))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.get_ns_uri({0})- (#echo(__LINE__)#)", data)
         _return = ""
 
         re_result = XmlResource.RE_NODE_NAME_XMLNS.match(data)
@@ -466,7 +466,7 @@ Remove a node and all children if applicable.
 
         if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.remove_node({0})- (#echo(__LINE__)#)".format(node_path))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.remove_node({0})- (#echo(__LINE__)#)", node_path)
         _return = False
 
         if (type(node_path) is str):
@@ -580,7 +580,7 @@ Set the cache pointer to a specific node.
 
         if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.set_cached_node({0})- (#echo(__LINE__)#)".format(node_path))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.set_cached_node({0})- (#echo(__LINE__)#)", node_path)
         _return = False
 
         if (type(node_path) is str):

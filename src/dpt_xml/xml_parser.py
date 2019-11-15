@@ -259,7 +259,7 @@ Adds a XML node with content - recursively if required.
             if (type(value) is _PY_UNICODE_TYPE): value = _PY_STR(value, "utf-8")
         #
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.add_node({0})- (#echo(__LINE__)#)".format(node_path))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.add_node({0})- (#echo(__LINE__)#)", node_path)
         _return = False
 
         if (self._data is None): self._data = self.node_type()
@@ -604,7 +604,7 @@ Registers a namespace (URI) for later use with this XML reader instance.
             if (type(uri) is _PY_UNICODE_TYPE): uri = _PY_STR(uri, "utf-8")
         #
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.register_ns({0}, {1})- (#echo(__LINE__)#)".format(ns, uri))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.register_ns({0}, {1})- (#echo(__LINE__)#)", ns, uri)
         self.data_ns[ns] = uri
 
         if (uri not in self.data_ns_default):
@@ -677,7 +677,7 @@ path.
 
         if (str is not _PY_UNICODE_TYPE and type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml._translate_ns_path({0})- (#echo(__LINE__)#)".format(node_path))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml._translate_ns_path({0})- (#echo(__LINE__)#)", node_path)
         _return = node_path
 
         nodes_list = node_path.split(" ")
@@ -760,7 +760,7 @@ Unregisters a namespace or clears the cache (if ns is empty).
 
         if (str is not _PY_UNICODE_TYPE and type(ns) is _PY_UNICODE_TYPE): ns = _PY_STR(ns, "utf-8")
 
-        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.unregister_ns({0})- (#echo(__LINE__)#)".format(ns))
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml.unregister_ns({0})- (#echo(__LINE__)#)", ns)
 
         if (len(ns) > 0):
             if (ns in self.data_ns):
