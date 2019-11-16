@@ -17,7 +17,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
-# pylint: disable=import-error,invalid-name,unused-import
+# pylint: disable=import-error,invalid-name,unused-import,wrong-import-position
 
 from weakref import proxy, ProxyTypes
 import re
@@ -93,7 +93,7 @@ RegExp to split XML namespace node names
     """
 RegExp to find node names with a specified position in a list
     """
-    RE_NODE_POSITIONS = re.compile("\\#(\\d+)(\W|$)")
+    RE_NODE_POSITIONS = re.compile("\\#(\\d+)(\\W|$)")
     """
 RegExp to find the first specified position for node names
     """
@@ -268,7 +268,7 @@ Adds a XML node with content - recursively if required.
             node_path = self._translate_ns_path(node_path)
 
             if (self.data_cache_node == ""
-                or re.match("^{0}(\W|$)".format(re.escape(self.data_cache_node)), node_path, re.I) is None
+                or re.match("^{0}(\\W|$)".format(re.escape(self.data_cache_node)), node_path, re.I) is None
                 or ("xml.item" not in self.data_cache_ptr and "xml.mtree" not in self.data_cache_ptr)
                ):
                 node_path_done = ""

@@ -20,7 +20,6 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 # pylint: disable=invalid-name,undefined-variable
 
 from xml.parsers import expat
-import re
 
 from .abstract_xml_parser import AbstractXmlParser, _PY_STR, _PY_UNICODE_TYPE
 

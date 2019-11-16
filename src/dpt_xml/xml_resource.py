@@ -43,6 +43,9 @@ create valid documents.
              Mozilla Public License, v. 2.0
     """
 
+    # pylint: disable=no-member
+    # pylint issue #2641 for @property overrides
+
     __slots__ = [ ]
     """
 python.org: __slots__ reserves space for the declared variables and prevents

@@ -17,7 +17,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
-# pylint: disable=import-error,invalid-name
+# pylint: disable=import-error,invalid-name,wrong-import-order,wrong-import-position
 
 import clr
 clr.AddReference("System.Xml")
