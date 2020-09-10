@@ -302,7 +302,7 @@ Returns the pointer to a specific node.
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -xml._get_node_ptr({0})- (#echo(__LINE__)#)", node_path)
         _return = None
 
-        if (type(node_path) is str):
+        if (self._data is not None and type(node_path) is str):
             if (self.data_cache_node != "" and node_path[:len(self.data_cache_node)] == self.data_cache_node):
                 node_path = node_path[len(self.data_cache_node):].strip()
                 node_ptr = self.data_cache_ptr
