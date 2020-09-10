@@ -253,6 +253,7 @@ Adds a XML node with content - recursively if required.
         """
 
         # global: _PY_STR, _PY_UNICODE_TYPE
+        # pylint: disable=unsupported-membership-test
 
         if (str is not _PY_UNICODE_TYPE):
             if (type(node_path) is _PY_UNICODE_TYPE): node_path = _PY_STR(node_path, "utf-8")
