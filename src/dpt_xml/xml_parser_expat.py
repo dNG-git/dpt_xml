@@ -36,13 +36,13 @@ This implementation supports expat for XML parsing.
              Mozilla Public License, v. 2.0
     """
 
-    __slots__ = [ "node_path",
+    __slots__ = ( "node_path",
                   "node_path_list",
                   "parser_active",
                   "parser_cache",
                   "parser_cache_counter",
                   "parser_cache_link"
-                ]
+                )
     """
 python.org: __slots__ reserves space for the declared variables and prevents
 the automatic creation of __dict__ and __weakref__ for each instance.

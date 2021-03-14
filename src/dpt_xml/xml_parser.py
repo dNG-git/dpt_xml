@@ -103,7 +103,7 @@ RegExp to find node names starting with a number (and are not standard
 compliant)
     """
 
-    __slots__ = [ "__weakref__",
+    __slots__ = ( "__weakref__",
                   "_data",
                   "data_cache_node",
                   "data_cache_ptr",
@@ -118,7 +118,7 @@ compliant)
                   "_log_handler",
                   "node_type",
                   "parser_instance"
-                ]
+                )
     """
 python.org: __slots__ reserves space for the declared variables and prevents
 the automatic creation of __dict__ and __weakref__ for each instance.
